@@ -1,0 +1,29 @@
+bsp_hal/CMakeFiles/hal2_bsp.dir/HAL/src/alt_dma_txchan_open.c.obj: \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/src/alt_dma_txchan_open.c \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/sys/alt_dma.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/sys/alt_dma_dev.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/priv/alt_dev_llist.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/sys/alt_llist.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/alt_types.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/errno.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/errno.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/reent.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/_ansi.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/newlib.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/_newlib_version.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/config.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/machine/ieeefp.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/features.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/lib/gcc/riscv32-unknown-elf/13.2.0/include/stddef.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/cdefs.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/machine/_default_types.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/_types.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/machine/_types.h \
+ /home/muhammad/altera/24.1std/riscfree/toolchain/riscv32-unknown-elf/riscv32-unknown-elf/include/sys/lock.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/sys/alt_errno.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/priv/alt_file.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/sys/alt_dev.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/./system.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/./linker.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/os/alt_sem.h \
+ /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/HAL/inc/priv/alt_no_error.h

@@ -24,6 +24,11 @@
 #include <stdio.h>
 #include "system.h"
 
+extern "C" {
+#include "priv/alt_busy_sleep.h"
+  }
+
+
 int main(void)
 {
 
@@ -31,9 +36,9 @@ int main(void)
   IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE,0x0F);
   while (1)
   {
-    //ALT_USLEEP(100000);
+    alt_busy_sleep(100000);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE,0x05);
-    //ALT_USLEEP(100000);
+    alt_busy_sleep(100000);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE,0x0F);
   }
 }

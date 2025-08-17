@@ -13,7 +13,7 @@ set(BspLinkerScript "${CMAKE_CURRENT_SOURCE_DIR}/linker.x" CACHE STRING
     "The linker script an app should use.")
 
 # HAL library
-add_library("${BspLibraryName}" OBJECT "")
+add_library("${BspLibraryName}" STATIC "")
 
 target_include_directories("${BspLibraryName}" PUBLIC
     .

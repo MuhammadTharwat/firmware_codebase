@@ -54,4 +54,4 @@ add_custom_command(
     COMMENT "Creating BootROM.hex."
     VERBATIM
 )
-add_custom_target(create-hex ALL DEPENDS "BootROM.hex")
+

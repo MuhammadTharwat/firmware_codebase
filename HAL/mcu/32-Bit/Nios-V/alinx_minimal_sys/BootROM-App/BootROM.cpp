@@ -23,7 +23,6 @@
 #include <altera_avalon_pio_regs.h>
 #include <stdio.h>
 #include "system.h"
-#include "sys/alt_sys_wrappers.h"
 
 int main(void)
 {
@@ -32,9 +31,9 @@ int main(void)
   IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE,0x0F);
   while (1)
   {
-    ALT_USLEEP(100000);
+    //ALT_USLEEP(100000);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE,0x05);
-    ALT_USLEEP(100000);
+    //ALT_USLEEP(100000);
     IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE,0x0F);
   }
 }

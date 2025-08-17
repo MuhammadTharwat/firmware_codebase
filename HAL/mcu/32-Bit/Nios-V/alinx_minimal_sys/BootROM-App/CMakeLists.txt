@@ -14,7 +14,7 @@ add_executable(BootROM.elf)
 
 target_sources(BootROM.elf
     PRIVATE
-        app/app.c
+        ./BootROM.cpp
 )
 
 target_include_directories(BootROM.elf

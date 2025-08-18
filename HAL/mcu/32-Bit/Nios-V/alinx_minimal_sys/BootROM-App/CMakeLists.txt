@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-add_subdirectory(../bsp_hal bsp_hal)
+add_subdirectory(../ ./alinx_minimal_sys)
 
 include(../bsp_hal/toolchain.cmake)
 
@@ -29,12 +29,15 @@ target_compile_definitions(${EXECUTABLE} PRIVATE)
 
 target_include_directories (${EXECUTABLE} 	PRIVATE  )
 
-target_link_libraries(${EXECUTABLE}
+
+target_link_libraries(${EXECUTABLE} PUBLIC alinx_minimal_sys)
+
+
+target_link_libraries(${EXECUTABLE} PUBLIC alinx_minimal_sys
     PRIVATE
         -Wl,-Map=${CMAKE_PROJECT_NAME}.map
         -T "${BspLinkerScript}" -nostdlib
         "${ExtraArchiveLibraries}"
-        -Wl,--start-group "${BspLibraryName}" -lc -lstdc++ -lgcc -lm -Wl,--end-group
 )
 
 # Print executable size

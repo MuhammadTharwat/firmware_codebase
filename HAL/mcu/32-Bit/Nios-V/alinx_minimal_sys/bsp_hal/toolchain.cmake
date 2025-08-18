@@ -28,7 +28,7 @@ add_compile_options(
     $<$<COMPILE_LANGUAGE:ASM>:-Wa,-gdwarf2>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
     -DALT_SINGLE_THREADED
     -Wall -Wformat-security
     -Wformat

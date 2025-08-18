@@ -10,48 +10,40 @@ enable_language(ASM)
 enable_language(C)
 enable_language(CXX)
 
-add_executable(BootROM.elf)
+set(EXECUTABLE ${PROJECT_NAME}.elf)
 
-target_sources(BootROM.elf
-    PRIVATE
-        ./BootROM.cpp
-)
+####################################SOURCE FILES##########################################
+set(SOURCE_FILES ./BootROM.cpp)
 
-target_include_directories(BootROM.elf
-    PRIVATE
-    PUBLIC
-)
+add_executable(${EXECUTABLE} ${SOURCE_FILES})
 
-target_link_libraries(BootROM.elf
+############################### Define Optimization Level ##################################
+set(OPTIMIZATION_LEVEL 			-Os)
+
+############################### Define Debug Information Level #############################
+set(DEBUG_INFORMATION_LEVEL 	-g)
+############################### App Specific Flags ##################
+set(APP_SPECIFIC_FLAGS		"-DDEBUG_MODE -DIAGNOSTIC_LOG")
+
+target_compile_definitions(${EXECUTABLE} PRIVATE)
+
+target_include_directories (${EXECUTABLE} 	PRIVATE  )
+
+target_link_libraries(${EXECUTABLE}
     PRIVATE
+        -Wl,-Map=${CMAKE_PROJECT_NAME}.map
         -T "${BspLinkerScript}" -nostdlib
         "${ExtraArchiveLibraries}"
         -Wl,--start-group "${BspLibraryName}" -lc -lstdc++ -lgcc -lm -Wl,--end-group
 )
 
-# Create objdump from ELF.
-set(objdump BootROM.elf.objdump)
-add_custom_command(
-    OUTPUT "${objdump}"
-    DEPENDS BootROM.elf
-    COMMAND "${ToolchainObjdump}" "${ToolchainObjdumpFlags}" BootROM.elf >
-            "${objdump}"
-    COMMENT "Creating ${objdump}."
-    VERBATIM
-)
-add_custom_target(create-objdump ALL DEPENDS "${objdump}")
-
 # Print executable size
-add_custom_command(TARGET BootROM.elf
+add_custom_command(TARGET ${EXECUTABLE}
         POST_BUILD
-        COMMAND ${ToolchainPrefix}size BootROM.elf)
-# Generate HEX file(s) from BootROM.elf using elf2hex tool.
-# Note : If ECC Full is enabled, width of 39 is set for NiosV TCM. Otherwise, 32.
-add_custom_command(
-    OUTPUT "BootROM.hex"
-    DEPENDS BootROM.elf
-    COMMAND elf2hex BootROM.elf -o BootROM.hex -b 0x20000000 -w 32 -e 0x20003FFF -r 4
-    COMMENT "Creating BootROM.hex."
-    VERBATIM
-)
+        COMMAND ${ToolchainPrefix}size ${EXECUTABLE})
 
+# Create hex file
+add_custom_command(TARGET ${EXECUTABLE}
+        POST_BUILD
+        COMMAND elf2hex ${EXECUTABLE} -o ${PROJECT_NAME}.hex -b 0x20000000 -w 32 -e 0x20003FFF -r 4
+        COMMAND ${ToolchainPrefix}objcopy -O binary ${EXECUTABLE} ${PROJECT_NAME}.bin)

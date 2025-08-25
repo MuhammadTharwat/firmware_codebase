@@ -29,10 +29,10 @@ namespace bsp
 	public:
 		led_base(void) = default;
 		~led_base(void) = default;
-		virtual void init(void) const = 0;
-		virtual void on(void) const = 0;
-		virtual void off(void) const = 0;
-		virtual void toggle(void) const = 0;
+		virtual std::int16_t init(void) const = 0;
+		virtual std::int16_t on(void) const = 0;
+		virtual std::int16_t off(void) const = 0;
+		virtual std::int16_t toggle(void) const = 0;
 	};
 
 	template <std::uintmax_t uint_led_nr>
@@ -41,10 +41,10 @@ namespace bsp
 	public:
 		~led(void) = default;
 		static led &get_instance(void);
-		void init(void) const override;
-		void on(void) const override;
-		void off(void) const override;
-		void toggle(void) const override;
+		std::int16_t init(void) const override;
+		std::int16_t on(void) const override;
+		std::int16_t off(void) const override;
+		std::int16_t toggle(void) const override;
 
 	private:
 		led(void) = default;

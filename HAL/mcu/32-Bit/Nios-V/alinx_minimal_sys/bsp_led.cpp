@@ -10,6 +10,7 @@
 #include "bsp_led.hpp"
 #include <altera_avalon_pio_regs.h>
 #include "system.h"
+#include "general_includes.hpp"
 
 /******************************************   Macros **********************************************************/
 #define MAX_NUM_LEDs 4
@@ -28,7 +29,7 @@
 namespace bsp
 {
     template <std::uintmax_t uint_led_nr>
-    void led<uint_led_nr>::init(void) const
+    std::int16_t led<uint_led_nr>::init(void) const
     {
         static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
         switch (uint_led_nr)
@@ -70,10 +71,11 @@ namespace bsp
             break;
         }
         }
+        return GENERIC_SUCCESS;
     }
 
     template <std::uintmax_t uint_led_nr>
-    void led<uint_led_nr>::on(void) const
+    std::int16_t led<uint_led_nr>::on(void) const
     {
         static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
         switch (uint_led_nr)
@@ -114,10 +116,11 @@ namespace bsp
             break;
         }
         }
+        return GENERIC_SUCCESS;
     }
 
     template <std::uintmax_t uint_led_nr>
-    void led<uint_led_nr>::off(void) const
+    std::int16_t led<uint_led_nr>::off(void) const
     {
         static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
         switch (uint_led_nr)
@@ -159,10 +162,11 @@ namespace bsp
             break;
         }
         }
+        return GENERIC_SUCCESS;
     }
 
     template <std::uintmax_t uint_led_nr>
-    void led<uint_led_nr>::toggle(void) const
+    std::int16_t led<uint_led_nr>::toggle(void) const
     {
         static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
         switch (uint_led_nr)
@@ -204,6 +208,7 @@ namespace bsp
             break;
         }
         }
+        return GENERIC_SUCCESS;
     }
 
     template <std::uintmax_t uint_led_nr>

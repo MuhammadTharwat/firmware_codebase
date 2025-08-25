@@ -40,6 +40,11 @@ target_link_libraries(${EXECUTABLE} PUBLIC alinx_minimal_sys
         "${ExtraArchiveLibraries}"
 )
 
+##### Link Serial Flash memory
+add_subdirectory(../../../../../memory/m25p64 ./m25p64)
+target_include_directories (m25p64	PRIVATE ../../../../../../RTOS/RTOS_OSAL/Baremetal_implementation)
+target_link_libraries(${EXECUTABLE} PUBLIC m25p64)
+
 # Print executable size
 add_custom_command(TARGET ${EXECUTABLE}
         POST_BUILD

@@ -28,16 +28,16 @@ namespace bsp
 
     typedef enum
     {
-        pin_lvl_low = 0,
-        pin_lvl_high
+        pin_state_low = 0,
+        pin_state_high
     } tenu_pin_state;
 
     typedef enum
     {
-        io_res_floating = 0,
-        io_res_pull_up,
-        io_res_pull_down
-    } tenu_io_res_mode;
+        io_bias_floating = 0,
+        io_bias_pull_up,
+        io_bias_pull_down
+    } tenu_io_bias_mode;
 
     class io_base
     {
@@ -47,10 +47,10 @@ namespace bsp
             virtual std::int16_t init(tenu_io_direction ) = 0;
             virtual std::int16_t read(tenu_pin_state &) const = 0;
             virtual std::int16_t write(tenu_pin_state ) const = 0;
-            virtual std::int16_t set_res_mode(tenu_io_res_mode ) = 0;
+            virtual std::int16_t set_bias(tenu_io_bias_mode ) = 0;
     };
 
-    template <std::uint8_t u8_inst>
+    template <std::uintmax_t uint_io_nr>
     class io : private noncopyable, public io_base
     {
         public:
@@ -59,13 +59,27 @@ namespace bsp
             std::int16_t init(tenu_io_direction ) override;
             std::int16_t read(tenu_pin_state &) const override;
             std::int16_t write(tenu_pin_state ) const override;
-            std::int16_t set_res_mode(tenu_io_res_mode ) override;
+            std::int16_t set_bias(tenu_io_bias_mode ) override;
         private:
             io(void) = default;
             tenu_io_direction enu_io_direction;
-            tenu_io_res_mode enu_res_mode;
+            tenu_io_bias_mode enu_bias_mode;
     };
 
+    template <std::uintmax_t uint_io_nr>
+    class output : private noncopyable, public io_base
+    {
+    public:
+        ~output(void) = default;
+        static output &get_instance(void);
+        std::int16_t init(tenu_io_direction) = delete;
+        std::int16_t init(void);
+        std::int16_t read(tenu_pin_state &) const override;
+        std::int16_t write(tenu_pin_state) const override;
+
+    private:
+        output(void) = default;
+    };
 }
 
 #endif

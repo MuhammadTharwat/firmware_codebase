@@ -25,11 +25,11 @@
 class m25p64
 {
 public:
-    m25p64(bsp::spi_base &, bsp::io_base &);
+    m25p64(bsp::spi &, bsp::output &);
     ~m25p64() = default;
 
-    private:
-    bsp::spi_base &spi_ref;
-    bsp::io_base & cs_ref;
+private:
+    bsp::spi &spi_ref;
+    bsp::output &cs_ref;
 };
 #endif /*M25P64_H */

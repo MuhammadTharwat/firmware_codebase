@@ -11,8 +11,8 @@
 #define BSP_IO_H_
 
 #include "cstdint"
-#include <stddef.h>
 #include <noncopyable.hpp>
+#include "bsp_objects.hpp"
 /***********************************************  Defines    **************************************************/
 /***********************************************  Constants   *************************************************/
 /***********************************************  Enumerations   **********************************************/
@@ -39,47 +39,35 @@ namespace bsp
         io_bias_pull_down
     } tenu_io_bias_mode;
 
-    class io_base
-    {
-        public:
-            io_base(void) = default;
-            ~io_base(void) = default;
-            virtual std::int16_t init(tenu_io_direction ) = 0;
-            virtual std::int16_t read(tenu_pin_state &) const = 0;
-            virtual std::int16_t write(tenu_pin_state ) const = 0;
-            virtual std::int16_t set_bias(tenu_io_bias_mode ) = 0;
-    };
-
-    template <std::uintmax_t uint_io_nr>
-    class io : private noncopyable, public io_base
-    {
-        public:
-            ~io(void) = default;
-            static io &get_instance(void);
-            std::int16_t init(tenu_io_direction ) override;
-            std::int16_t read(tenu_pin_state &) const override;
-            std::int16_t write(tenu_pin_state ) const override;
-            std::int16_t set_bias(tenu_io_bias_mode ) override;
-        private:
-            io(void) = default;
-            tenu_io_direction enu_io_direction;
-            tenu_io_bias_mode enu_bias_mode;
-    };
-
-    template <std::uintmax_t uint_io_nr>
-    class output : private noncopyable, public io_base
+    class io : private noncopyable
     {
     public:
+        io(io_dev &);
+        ~io(void) = default;
+        static io &get_instance(void);
+        std::int16_t init(tenu_io_direction);
+        std::int16_t read(tenu_pin_state &) const;
+        std::int16_t write(tenu_pin_state) const;
+        std::int16_t set_bias(tenu_io_bias_mode);
+
+    protected:
+        io_dev &rio_dev;
+        tenu_io_direction enu_io_direction;
+        tenu_io_bias_mode enu_bias_mode;
+    };
+
+    class output : public io
+    {
+    public:
+        output(io_dev &);
         ~output(void) = default;
         static output &get_instance(void);
         std::int16_t init(tenu_io_direction) = delete;
         std::int16_t init(void);
-        std::int16_t read(tenu_pin_state &) const override;
-        std::int16_t write(tenu_pin_state) const override;
-
-    private:
-        output(void) = default;
+        std::int16_t set_bias(tenu_io_bias_mode) = delete;
     };
+
+    io_dev &get_io_dev(std::uintmax_t);
 }
 
 #endif

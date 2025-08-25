@@ -13,7 +13,7 @@
 
 #include "cstdint"
 #include <noncopyable.hpp>
-
+#include "bsp_objects.hpp"
 /***********************************************  Defines    **************************************************/
 
 
@@ -24,31 +24,21 @@
 /*********************************************** Data types  **************************************************/
 namespace bsp
 {
-	class led_base
+	class led : private noncopyable
 	{
 	public:
-		led_base(void) = default;
-		~led_base(void) = default;
-		virtual std::int16_t init(void) const = 0;
-		virtual std::int16_t on(void) const = 0;
-		virtual std::int16_t off(void) const = 0;
-		virtual std::int16_t toggle(void) const = 0;
-	};
-
-	template <std::uintmax_t uint_led_nr>
-	class led : private noncopyable, public virtual led_base
-	{
-	public:
+		led(led_dev &);
 		~led(void) = default;
-		static led &get_instance(void);
-		std::int16_t init(void) const override;
-		std::int16_t on(void) const override;
-		std::int16_t off(void) const override;
-		std::int16_t toggle(void) const override;
+		std::int16_t init(void) const;
+		std::int16_t on(void) const;
+		std::int16_t off(void) const;
+		std::int16_t toggle(void) const;
 
 	private:
-		led(void) = default;
+		led_dev &rled_dev;
 	};
+
+	led_dev &get_led_dev(std::uintmax_t);
 }
 
 /******************************************      API Prototypes      *************************************/

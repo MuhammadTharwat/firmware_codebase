@@ -28,23 +28,24 @@
 /******************************************* Local functions prototypes **************************************/
 /******************************************* Local function implementation ***********************************/
 //static bsp::sys *pobj_sys{&bsp::sys::get_instance()};
-static bsp::led<0u> *pobj_led_0{&bsp::led<0u>::get_instance()};
-static bsp::led<1u> *pobj_led_1{&bsp::led<1u>::get_instance()};
-static bsp::led<2u> *pobj_led_2{&bsp::led<2u>::get_instance()};
-static bsp::led<3u> *pobj_led_3{&bsp::led<3u>::get_instance()};
+static bsp::led obj_led_0{bsp::get_led_dev(0)};
+static bsp::led obj_led_1{bsp::get_led_dev(1)};
+static bsp::led obj_led_2{bsp::get_led_dev(2)};
+static bsp::led obj_led_3{bsp::get_led_dev(3)};
 int main(void)
 {
-  pobj_led_0->init();
-  pobj_led_1->init();
-  pobj_led_2->init();
-  pobj_led_3->init();
-  pobj_led_0->toggle();
+  obj_led_0.init();
+  obj_led_1.init();
+  obj_led_2.init();
+  obj_led_3.init();
+
+  obj_led_0.toggle();
   while (1)
   {
     volatile uint32_t u32_cnt;
     for(u32_cnt = 0u; u32_cnt < 2000000; u32_cnt++);
-    pobj_led_0->toggle();
-    pobj_led_1->toggle();
+    obj_led_0.toggle();
+    obj_led_3.toggle();
   }
   return 0;
 }

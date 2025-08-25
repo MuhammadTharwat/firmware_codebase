@@ -28,199 +28,48 @@
 
 namespace bsp
 {
-    template <std::uintmax_t uint_led_nr>
-    std::int16_t led<uint_led_nr>::init(void) const
+
+    led::led(led_dev &rled_dev_in) : rled_dev(rled_dev_in)
     {
-        static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
-        switch (uint_led_nr)
-        {
-        case UINTMAX_C(0):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_0;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
+        /*Do nothing*/
+    }
 
-        case UINTMAX_C(1):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_1;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
+    std::int16_t led::init(void) const
+    {
 
-        case UINTMAX_C(2):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_2;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(3):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_3;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-        }
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        u32_pio_data |= rled_dev.u32_idx;
+        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
         return GENERIC_SUCCESS;
     }
 
-    template <std::uintmax_t uint_led_nr>
-    std::int16_t led<uint_led_nr>::on(void) const
+    std::int16_t led::on(void) const
     {
-        static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
-        switch (uint_led_nr)
-        {
-        case UINTMAX_C(0):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data &= ~LED_0;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(1):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data &= ~LED_1;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(2):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data &= ~LED_2;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(3):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data &= ~LED_3;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        u32_pio_data &= ~rled_dev.u32_idx;
+        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
         return GENERIC_SUCCESS;
     }
 
-    template <std::uintmax_t uint_led_nr>
-    std::int16_t led<uint_led_nr>::off(void) const
+    std::int16_t led::off(void) const
     {
-        static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
-        switch (uint_led_nr)
-        {
-        case UINTMAX_C(0):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_0;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(1):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_1;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(2):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_2;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(3):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= LED_3;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-        }
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        u32_pio_data |= rled_dev.u32_idx;
+        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
         return GENERIC_SUCCESS;
     }
 
-    template <std::uintmax_t uint_led_nr>
-    std::int16_t led<uint_led_nr>::toggle(void) const
+    std::int16_t led::toggle(void) const
     {
-        static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
-        switch (uint_led_nr)
-        {
-        case UINTMAX_C(0):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data ^= LED_0;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(1):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data ^= LED_1;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(2):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data ^= LED_2;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        case UINTMAX_C(3):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data ^= LED_3;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-        }
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        u32_pio_data ^= rled_dev.u32_idx;
+        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
         return GENERIC_SUCCESS;
     }
 
-    template <std::uintmax_t uint_led_nr>
-    led<uint_led_nr> &led<uint_led_nr>::get_instance(void)
+    led_dev &get_led_dev(std::uintmax_t uint_dev)
     {
-        static_assert(UINTMAX_C(MAX_NUM_LEDs) > uint_led_nr, "Unsupported Num LEDs");
-        static led<uint_led_nr> obj_led_singleton;
-        return obj_led_singleton;
+        static led_dev led_devs[MAX_NUM_LEDs] = {{LED_0}, {LED_1}, {LED_2}, {LED_3}};
+        return led_devs[uint_dev];
     }
 }
-
-template class bsp::led<0u>;
-template class bsp::led<1u>;
-template class bsp::led<2u>;
-template class bsp::led<3u>;

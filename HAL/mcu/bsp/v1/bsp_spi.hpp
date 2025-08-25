@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <noncopyable.hpp>
 #include <mutex.hpp>
+#include "bsp_objects.hpp"
 /***********************************************  Defines    **************************************************/
 /***********************************************  Constants   *************************************************/
 /***********************************************  Enumerations   **********************************************/
@@ -27,33 +28,22 @@ namespace bsp
     using tpfun_spi_tx_cb = void (*)(void);
     using tpfun_spi_rx_cb = void (*)(const void *pv_rx_data, size_t sz_len);
 
-    class spi_base
+    class spi : private noncopyable
     {
     public:
-        spi_base(void) = default;
-        ~spi_base(void) = default;
-        virtual std::int16_t init(std::uint32_t , tenu_spi_mode ) = 0;
-        virtual std::int16_t deinit(void) const = 0;
-        virtual std::int16_t tx(void *, std::size_t , tpfun_spi_tx_cb) = 0;
-        virtual std::int16_t rx(void *, std::size_t , tpfun_spi_rx_cb) = 0;
-        rtos_osal::mutex mtx;
-    };
-
-    template <std::uint8_t u8_inst>
-    class spi : private noncopyable, public spi_base
-    {
-    public:
+        spi(spi_dev &);
         ~spi(void) = default;
-        static spi &get_instance(void);
-        std::int16_t init(std::uint32_t , tenu_spi_mode ) override;
-        std::int16_t deinit(void) const override;
-        std::int16_t tx(void *, std::size_t , tpfun_spi_tx_cb) override;
-        std::int16_t rx(void *, std::size_t , tpfun_spi_rx_cb) override;
+        std::int16_t init(std::uint32_t, tenu_spi_mode);
+        std::int16_t deinit(void) const;
+        std::int16_t tx(void *, std::size_t, tpfun_spi_tx_cb);
+        std::int16_t rx(void *, std::size_t, tpfun_spi_rx_cb);
+
     private:
-        spi(void) = default;
         std::uint32_t u32_baudrate_bps;
         tenu_spi_mode enu_spi_mode;
         tpfun_spi_tx_cb pfun_tx_cb;
         tpfun_spi_rx_cb pfun_rx_cb;
     };
+
+    spi_dev &get_spi_dev(std::uintmax_t);
 }

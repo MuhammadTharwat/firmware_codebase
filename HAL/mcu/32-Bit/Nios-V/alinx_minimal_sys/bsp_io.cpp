@@ -26,80 +26,46 @@
 
 namespace bsp
 {
-    template<std::uintmax_t uint_io_nr>
-    output<uint_io_nr> &output<uint_io_nr>::get_instance ()
+
+    output::output(io_dev &rio_dev_in) : io(rio_dev_in)
     {
-        static_assert(UINTMAX_C(MAX_NUM_IOs) > uint_io_nr, "Unsupported Num Outputs");
-        static output<uint_io_nr> obj_output_singleton;
-        return obj_output_singleton;
+        /*Do nothing*/
     }
 
-    template <std::uintmax_t uint_io_nr>
-    std::int16_t init(void)
+    std::int16_t output::init(void)
     {
-        static_assert(UINTMAX_C(MAX_NUM_IOs) > uint_io_nr, "Unsupported Num Outputs");
-        switch (uint_io_nr)
-        {
-        case UINTMAX_C(0):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            u32_pio_data |= IO_0;
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        u32_pio_data |= rio_dev.u32_idx;
+        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
         return GENERIC_SUCCESS;
     }
 
-    template <std::uintmax_t uint_io_nr>
-    std::int16_t read(tenu_pin_state &renu_state)
+    std::int16_t io::read(tenu_pin_state &renu_state) const
     {
-        static_assert(UINTMAX_C(MAX_NUM_IOs) > uint_io_nr, "Unsupported Num Outputs");
-        switch (uint_io_nr)
-        {
-        case UINTMAX_C(0):
-        {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            renu_state = (u32_pio_data & IO_0) pin_state_high : pin_state_low;
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
+
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        renu_state = (u32_pio_data & rio_dev.u32_idx) ? pin_state_high : pin_state_low;
         return GENERIC_SUCCESS;
     }
 
-    template <std::uintmax_t uint_io_nr>
-    std::int16_t write(tenu_pin_state enu_state)
+    std::int16_t io::write(tenu_pin_state enu_state) const
     {
-        static_assert(UINTMAX_C(MAX_NUM_IOs) > uint_io_nr, "Unsupported Num Outputs");
-        switch (uint_io_nr)
+        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
+        if (pin_state_high == enu_state)
         {
-        case UINTMAX_C(0):
+            u32_pio_data |= rio_dev.u32_idx;
+        }
+        else
         {
-            uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-            if (pin_state_high == enu_state)
-            {
-                u32_pio_data |= IO_0;
-            }
-            else
-            {
-                u32_pio_data &= ~IO_0;
-            }
-            IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
-            break;
+            u32_pio_data &= ~rio_dev.u32_idx;
         }
-        default:
-        {
-            break;
-        }
-        }
+        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
         return GENERIC_SUCCESS;
+    }
+
+    io_dev &get_io_dev(std::uintmax_t uint_dev)
+    {
+        static io_dev io_devs[MAX_NUM_IOs] = {{IO_0}};
+        return io_devs[uint_dev];
     }
 };

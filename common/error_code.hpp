@@ -226,3 +226,6 @@
 
 /*SSD1309 Sensor Error base*/
 #define SSD1309_ERROR_BASE -3250
+
+/*m25p64 serial flash Error base*/
+#define M25P64_ERROR_BASE -3300

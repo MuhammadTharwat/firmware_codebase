@@ -20,10 +20,10 @@ namespace bsp
 {
     enum tenu_spi_mode
     {
-        spi_mode_pol_high_ph_1st_edge = 0,
-        spi_mode_pol_high_ph_2nd_edge,
-        spi_mode_pol_low_ph_1st_edge,
-        spi_mode_pol_low_ph_2nd_edge
+        cpol_low_cpha_low = 0,
+        cpol_low_cpha_high,
+        cpol_high_cpha_low,
+        cpol_high_cpha_high
     };
     using tpfun_spi_tx_cb = void (*)(void);
     using tpfun_spi_rx_cb = void (*)(const void *pv_rx_data, size_t sz_len);
@@ -37,9 +37,10 @@ namespace bsp
         std::int16_t deinit(void) const;
         std::int16_t tx(void *, std::size_t, tpfun_spi_tx_cb);
         std::int16_t rx(void *, std::size_t, tpfun_spi_rx_cb);
+        rtos_osal::mutex mtx;
 
     private:
-        std::uint32_t u32_baudrate_bps;
+        std::uint32_t u32_spi_clk_divisor;
         tenu_spi_mode enu_spi_mode;
         tpfun_spi_tx_cb pfun_tx_cb;
         tpfun_spi_rx_cb pfun_rx_cb;

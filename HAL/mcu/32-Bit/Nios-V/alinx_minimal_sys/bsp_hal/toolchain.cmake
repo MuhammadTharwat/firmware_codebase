@@ -24,34 +24,16 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_C_FLAGS_RELEASE "-Os")
 set(CMAKE_CXX_FLAGS_RELEASE "-Os")
 
-add_compile_options(
-    $<$<COMPILE_LANGUAGE:ASM>:-Wa,-gdwarf2>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-    -DALT_SINGLE_THREADED
-    -Wall -Wformat-security
-    -Wformat
-    -Wformat-security
-    -ffunction-sections -fdata-sections
-    -fstack-protector-strong
-    -march=rv32i -mabi=ilp32
-)
+set(OBJECT_GEN_FLAGS "${APP_SPECIFIC_FLAGS}")
 
-add_link_options(
-    -Wl,--defsym,exit=_exit
-    -Wl,--gc-sections
-    -march=rv32i -mabi=ilp32
-    -nostdlib
-)
+string(APPEND OBJECT_GEN_FLAGS " -Os -DALT_SINGLE_THREADED -Wall -Wformat-security -Wunused-parameter  -Werror -Wformat -Wformat-security")
+string(APPEND OBJECT_GEN_FLAGS " -ffunction-sections -fdata-sections -fstack-protector-strong -march=rv32i -mabi=ilp32")
+string(APPEND OBJECT_GEN_FLAGS " -DALT_LOG_FLAGS=0 -DALT_NO_CLEAN_EXIT -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -D__hal__")
 
-add_compile_definitions(
-    ALT_LOG_FLAGS=0
-    ALT_NO_CLEAN_EXIT
-    ALT_NO_EXIT
-    ALT_USE_DIRECT_DRIVERS
-    __hal__
-)
 
-remove_definitions(
-)
+set(CMAKE_C_FLAGS "${OBJECT_GEN_FLAGS} -std=gnu11 " CACHE INTERNAL "C Compiler options")
+set(CMAKE_CXX_FLAGS "${OBJECT_GEN_FLAGS} -std=c++17 -fno-exceptions -fno-threadsafe-statics -fno-rtti" CACHE INTERNAL "C++ Compiler options")
+set(CMAKE_ASM_FLAGS "${OBJECT_GEN_FLAGS} -Wa,-gdwarf2 " CACHE INTERNAL "ASM Compiler options")
+
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections --specs=nosys.specs -Wl,--defsym,exit=_exit -Wl,--gc-sections -march=rv32i -mabi=ilp32 -nostdlib" CACHE INTERNAL "Linker options")
+set(CMAKE_LINK_LIB "-lm -lc -lgcc")

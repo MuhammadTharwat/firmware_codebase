@@ -18,6 +18,18 @@
 #define LED_1 UINT32_C(2)
 #define LED_2 UINT32_C(4)
 #define LED_3 UINT32_C(8)
+
+#define GPIO_BASE 0x10000000
+
+#define IORD_GPIO_DIRECTION_REG IORD(GPIO_BASE, 0)
+#define IOWR_GPIO_DIRECTION_REG(data) IOWR(GPIO_BASE, 0, data)
+
+#define IORD_GPIO_INPUT_REG IORD(GPIO_BASE, 1)
+#define IOWR_GPIO_INPUT_REG(data) IOWR(GPIO_BASE, 1, data)
+
+#define IORD_GPIO_OUTPUT_REG IORD(GPIO_BASE, 2)
+#define IOWR_GPIO_OUTPUT_REG(data) IOWR(GPIO_BASE, 2, data)
+
 /***********************************************  Constants   *************************************************/
 
 /*********************************************** Enumeration	***********************************************/
@@ -36,34 +48,37 @@ namespace bsp
 
     std::int16_t led::init(void) const
     {
-
-        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-        u32_pio_data |= rled_dev.u32_idx;
-        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
+        /*Set output direction*/
+        uint32_t u32_reg = IORD_GPIO_DIRECTION_REG;
+        u32_reg |= rled_dev.u32_idx;
+        IOWR_GPIO_DIRECTION_REG(u32_reg);
+        u32_reg = IORD_GPIO_OUTPUT_REG;
+        u32_reg |= rled_dev.u32_idx;
+        IOWR_GPIO_OUTPUT_REG(u32_reg);
         return GENERIC_SUCCESS;
     }
 
     std::int16_t led::on(void) const
     {
-        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-        u32_pio_data &= ~rled_dev.u32_idx;
-        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
+        uint32_t u32_reg = IORD_GPIO_OUTPUT_REG;
+        u32_reg &= ~rled_dev.u32_idx;
+        IOWR_GPIO_OUTPUT_REG(u32_reg);
         return GENERIC_SUCCESS;
     }
 
     std::int16_t led::off(void) const
     {
-        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-        u32_pio_data |= rled_dev.u32_idx;
-        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
+        uint32_t u32_reg = IORD_GPIO_OUTPUT_REG;
+        u32_reg |= rled_dev.u32_idx;
+        IOWR_GPIO_OUTPUT_REG(u32_reg);
         return GENERIC_SUCCESS;
     }
 
     std::int16_t led::toggle(void) const
     {
-        uint32_t u32_pio_data = IORD_ALTERA_AVALON_PIO_DATA(PIO_0_BASE);
-        u32_pio_data ^= rled_dev.u32_idx;
-        IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, u32_pio_data);
+        uint32_t u32_reg = IORD_GPIO_OUTPUT_REG;
+        u32_reg ^= rled_dev.u32_idx;
+        IOWR_GPIO_OUTPUT_REG(u32_reg);
         return GENERIC_SUCCESS;
     }
 

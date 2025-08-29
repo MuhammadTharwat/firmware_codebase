@@ -10,7 +10,6 @@ project(alinx_minimal_sys)
 
 set(COMMON_SOURCE_FILES  ./bsp_led.cpp
                          ./bsp_sys.cpp
-                         ./bsp_io.cpp
 					)
 
 add_library(${PROJECT_NAME} OBJECT ${COMMON_SOURCE_FILES})

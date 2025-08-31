@@ -21,11 +21,6 @@ target_include_directories("${BspLibraryName}" PUBLIC
     drivers/inc
 )
 
-target_compile_options("${BspLibraryName}" PUBLIC
-    -Wno-unused-parameter
-    -Wno-maybe-uninitialized
-)
-
 target_sources("${BspLibraryName}"
     PRIVATE
         HAL/src/alt_ecc_exception_entry.S

@@ -2,12 +2,12 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal2</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Aug 14, 2025 3:36:24 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1755182184616</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Aug 31, 2025 2:24:04 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1756646644195</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>./</BspGeneratedLocation>
-        <BspSettingsFile>/home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/software/bsp_hal/settings.bsp</BspSettingsFile>
-        <SopcDesignFile>../../NIOS_V_Minimal.sopcinfo</SopcDesignFile>
-        <SystemFileHash>ab845904ab2a1e399794d321683f13c9aaa1e1c868c18c6121e22a69ca9c045</SystemFileHash>
+        <BspSettingsFile>/home/muhammad/firmware_codebase/HAL/mcu/32-Bit/Nios-V/alinx_minimal_sys/bsp_hal/settings.bsp</BspSettingsFile>
+        <SopcDesignFile>../../../../../../../FPGA_Dev/altera-projects/NIOS_V_minimal_system/NIOS_V_Minimal.sopcinfo</SopcDesignFile>
+        <SystemFileHash>7c896694a6c4764290159a72d11cf371b083115574fce8e45aa44679389d50</SystemFileHash>
         <JdiFile>default</JdiFile>
         <Cpu>intel_niosv_m_0</Cpu>
         <SchemaVersion>1.9</SchemaVersion>
@@ -351,7 +351,7 @@
                 <SettingName>hal.make.cflags_optimization</SettingName>
                 <Identifier>none</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>-Os</Value>
+                <Value>-O2</Value>
                 <DefaultValue>-O2</DefaultValue>
                 <DestinationFile>makefile_variable</DestinationFile>
                 <Description>This setting defines the flags used by the compiler for CMAKE_BUILD_TYPE=Release. "-O0" = no optimization,"-O2" = "normal" optimization, etc. "-O0" is recommended for code that you want to debug since compiler optimization can remove variables and produce non-sequential execution of code while debugging.</Description>
@@ -375,7 +375,7 @@
                 <SettingName>hal.make.cflags_user_flags</SettingName>
                 <Identifier>none</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>-ffunction-sections -fdata-sections</Value>
+                <Value>none</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Custom flags passed to the compiler when compiling C, C++, and .S files. This setting defines flags that are always used by the compiler.</Description>
@@ -411,7 +411,7 @@
                 <SettingName>hal.make.cxx_flags</SettingName>
                 <Identifier>CXXFLAGS</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>-fno-exceptions -fno-threadsafe-statics -std=c++17</Value>
+                <Value>none</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>makefile_variable</DestinationFile>
                 <Description>Custom flags only passed to the C++ compiler.</Description>
@@ -423,7 +423,7 @@
                 <SettingName>hal.make.link_flags</SettingName>
                 <Identifier>none</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>-Wl,--gc-sections</Value>
+                <Value>none</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Linker flags.</Description>
@@ -471,7 +471,7 @@
                 <SettingName>hal.enable_exit</SettingName>
                 <Identifier>none</Identifier>
                 <Type>Boolean</Type>
-                <Value>0</Value>
+                <Value>1</Value>
                 <DefaultValue>1</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Add exit() support. This option increases code footprint if your "main()" routine does "return" or call "exit()". If false, defines ALT_NO_EXIT and reduces footprint.</Description>
@@ -483,7 +483,7 @@
                 <SettingName>hal.enable_clean_exit</SettingName>
                 <Identifier>none</Identifier>
                 <Type>Boolean</Type>
-                <Value>0</Value>
+                <Value>1</Value>
                 <DefaultValue>1</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>When your application exits, close file descriptors, call C++ destructors, etc. Code footprint can be reduced by disabling clean exit. If disabled, defines ALT_NO_CLEAN_EXIT and adds -D'exit(a)=_exit(a)' to compile options.</Description>
@@ -531,7 +531,7 @@
                 <SettingName>hal.enable_lightweight_device_driver_api</SettingName>
                 <Identifier>ALT_USE_DIRECT_DRIVERS</Identifier>
                 <Type>BooleanDefineOnly</Type>
-                <Value>true</Value>
+                <Value>false</Value>
                 <DefaultValue>false</DefaultValue>
                 <DestinationFile>public_mk_define</DestinationFile>
                 <Description>Enables lightweight device driver API. This reduces code and data footprint by removing the HAL layer that maps device names (e.g. /dev/uart0) to file descriptors. Instead, driver routines are called directly. The open(), close(), and lseek() routines will always fail if called. The read(), write(), fstat(), ioctl(), and isatty() routines only work for the stdio devices. If true, defines ALT_USE_DIRECT_DRIVERS.</Description>
@@ -588,9 +588,9 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>pio_0</slaveDescriptor>
-                <addressRange>0x10000000 - 0x1000001F</addressRange>
-                <addressSpan>32</addressSpan>
+                <slaveDescriptor>AXI_Lite_GPIO_0</slaveDescriptor>
+                <addressRange>0x10000000 - 0x1000000F</addressRange>
+                <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
@@ -634,8 +634,4 @@
                 <regionName>RAM</regionName>
                 <noLoad>false</noLoad>
         </LinkerSection>
-        <DriverPackageInfo>
-                <name>none</name>
-                <moduleName>pio_0</moduleName>
-        </DriverPackageInfo>
 </sch:Settings>

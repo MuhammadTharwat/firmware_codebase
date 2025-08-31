@@ -4,7 +4,7 @@
  * Machine generated for CPU 'intel_niosv_m_0' in SOPC Builder design 'NIOS_V_Minimal'
  * SOPC Builder design path: /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/NIOS_V_Minimal.sopcinfo
  *
- * Generated: Thu Aug 14 15:36:24 BST 2025
+ * Generated: Sun Aug 31 14:24:04 BST 2025
  */
 
 /*
@@ -53,6 +53,20 @@
 
 /* Include definitions from linker script generator */
 #include "linker.h"
+
+
+/*
+ * AXI_Lite_GPIO_0 configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_AXI_Lite_GPIO_0 AXI_Lite_GPIO
+#define AXI_LITE_GPIO_0_BASE 0x10000000
+#define AXI_LITE_GPIO_0_IRQ -1
+#define AXI_LITE_GPIO_0_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define AXI_LITE_GPIO_0_NAME "/dev/AXI_Lite_GPIO_0"
+#define AXI_LITE_GPIO_0_SPAN 16
+#define AXI_LITE_GPIO_0_TYPE "AXI_Lite_GPIO"
 
 
 /*
@@ -114,7 +128,7 @@
  */
 
 #define __ALTERA_AVALON_ONCHIP_MEMORY2
-#define __ALTERA_AVALON_PIO
+#define __AXI_LITE_GPIO
 #define __INTEL_NIOSV_M
 
 
@@ -262,11 +276,5 @@
  */
 
 #define NIOSV_INTERNAL_TIMER_TICKS_PER_SECOND 1000
-
-
-/*
- * pio_0 configuration
- *
- */
 
 #endif /* __SYSTEM_H_ */

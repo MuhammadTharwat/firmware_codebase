@@ -3,7 +3,7 @@
 # Machine generated for CPU 'intel_niosv_m_0' in SOPC Builder design 'NIOS_V_Minimal'
 # SOPC Builder design path: /home/muhammad/FPGA_Dev/altera-projects/NIOS_V_minimal_system/NIOS_V_Minimal.sopcinfo
 #
-# Generated: Thu Aug 14 15:36:24 BST 2025
+# Generated: Sun Aug 31 14:24:04 BST 2025
 
 # DO NOT MODIFY THIS FILE
 #

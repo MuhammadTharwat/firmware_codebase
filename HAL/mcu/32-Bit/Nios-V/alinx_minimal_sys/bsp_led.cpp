@@ -8,8 +8,8 @@
  ******************************************************************************
  */
 #include "bsp_led.hpp"
-#include <altera_avalon_pio_regs.h>
 #include "system.h"
+#include "io.h"
 #include "general_includes.hpp"
 
 /******************************************   Macros **********************************************************/

@@ -107,6 +107,7 @@ set_source_files_properties(${ALTERA_FILES} PROPERTIES COMPILE_FLAGS "-Wno-unuse
 
 add_library(${PROJECT_NAME} STATIC ${ALTERA_FILES} 
                                     ./bsp_led.cpp
+                                    ./bsp_uart.cpp
                                     )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${ALTERA_INCLUDE_DIR}

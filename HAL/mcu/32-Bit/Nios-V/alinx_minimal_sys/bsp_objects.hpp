@@ -43,12 +43,23 @@ namespace bsp
         std::uint32_t u32_idx;
     };
 
-    /*IO Object*/
+    /*SPI Object*/
     class spi_dev : private noncopyable
     {
     public:
         ~spi_dev() = default;
         spi_dev(std::uintmax_t uint_idx) : u32_idx(uint_idx)
+        {
+        }
+        std::uint32_t u32_idx;
+    };
+
+    /*UART Object*/
+    class uart_dev : private noncopyable
+    {
+    public:
+        ~uart_dev() = default;
+        uart_dev(std::uintmax_t uint_idx) : u32_idx(uint_idx)
         {
         }
         std::uint32_t u32_idx;

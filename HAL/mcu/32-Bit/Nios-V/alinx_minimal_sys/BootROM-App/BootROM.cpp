@@ -40,12 +40,16 @@ int main(void)
   obj_led_3.init();
 
   obj_led_0.toggle();
+  obj_led_1.toggle();
   while (1)
   {
     volatile uint32_t u32_cnt;
     for(u32_cnt = 0u; u32_cnt < 2000000; u32_cnt++);
     obj_led_0.toggle();
     obj_led_3.toggle();
+    for(u32_cnt = 0u; u32_cnt < 2000000; u32_cnt++);
+    obj_led_1.toggle();
+    obj_led_2.toggle();
   }
   return 0;
 }

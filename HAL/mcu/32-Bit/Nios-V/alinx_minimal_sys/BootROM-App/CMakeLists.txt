@@ -1,14 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
-
-add_subdirectory(../ ./alinx_minimal_sys)
-
-include(../bsp_hal/toolchain.cmake)
-
-project(BootROM)
-
-enable_language(ASM)
-enable_language(C)
-enable_language(CXX)
+set(CMAKE_TOOLCHAIN_FILE "../toolchain.cmake")
+project(BootROM C CXX ASM)
 
 set(EXECUTABLE ${PROJECT_NAME}.elf)
 
@@ -29,18 +21,9 @@ target_compile_definitions(${EXECUTABLE} PRIVATE)
 
 target_include_directories (${EXECUTABLE} 	PRIVATE  )
 
+add_subdirectory(../ ./alinx_minimal_sys)
+target_link_libraries(${EXECUTABLE} PUBLIC ALINX_MINIMAL_SYS)
 
-target_link_libraries(${EXECUTABLE} PUBLIC alinx_minimal_sys)
-
-
-target_link_libraries(${EXECUTABLE} PUBLIC alinx_minimal_sys
-    PRIVATE
-        -Wl,-Map=${CMAKE_PROJECT_NAME}.map
-        -T "${BspLinkerScript}" -nostdlib
-        "${ExtraArchiveLibraries}"
-)
-
-##### Link Serial Flash memory
 add_subdirectory(../../../../../memory/m25p64 ./m25p64)
 target_include_directories (m25p64	PRIVATE ../../../../../../RTOS/RTOS_OSAL/Baremetal_implementation
                                                 ../)

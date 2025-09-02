@@ -44,6 +44,7 @@ namespace bsp
     {
         uart_br_1200 = 0,
         uart_br_2400,
+        uart_br_4800,
         uart_br_9600,
         uart_br_19200,
         uart_br_38400,
@@ -56,6 +57,7 @@ namespace bsp
         tenu_uart_parity enu_parity;
         tenu_uart_stop_bits enu_stop;
         tenu_uart_baud_rate enu_baud_rate;
+        bool b_msb_first;
     };
 
     using tpfn_uart_tx_handler = void (*)(void);
@@ -65,8 +67,8 @@ namespace bsp
     {
     public:
         uart(uart_dev &);
-        ~uart(void) = default;
-        std::int16_t init(tstr_uart_init &) const;
+        ~uart() = default;
+        std::int16_t init(const tstr_uart_init &) const;
         void deinit(void) const;
         std::int16_t change_br(tenu_uart_baud_rate) const;
         std::int16_t tx(const void *, std::size_t, tpfn_uart_tx_handler) const;

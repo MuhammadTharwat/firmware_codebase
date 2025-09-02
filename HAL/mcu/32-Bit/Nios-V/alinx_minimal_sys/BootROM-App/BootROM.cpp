@@ -21,6 +21,7 @@
 
 #include "bsp_led.hpp"
 #include "bsp_sys.hpp"
+#include "bsp_uart.hpp"
 /***********************************************  Defines    **************************************************/
 
 /***********************************************  Constants   *************************************************/
@@ -28,28 +29,42 @@
 /******************************************* Local functions prototypes **************************************/
 /******************************************* Local function implementation ***********************************/
 //static bsp::sys *pobj_sys{&bsp::sys::get_instance()};
-static bsp::led obj_led_0{bsp::get_led_dev(0)};
-static bsp::led obj_led_1{bsp::get_led_dev(1)};
-static bsp::led obj_led_2{bsp::get_led_dev(2)};
-static bsp::led obj_led_3{bsp::get_led_dev(3)};
+static bsp::led gobj_led_0{bsp::get_led_dev(0)};
+static bsp::led gobj_led_1{bsp::get_led_dev(1)};
+static bsp::led gobj_led_2{bsp::get_led_dev(2)};
+static bsp::led gobj_led_3{bsp::get_led_dev(3)};
+
+/*UART */
+static bsp::uart gobj_uart0{bsp::get_uart_dev(0)};
 int main(void)
 {
-  obj_led_0.init();
-  obj_led_1.init();
-  obj_led_2.init();
-  obj_led_3.init();
+  const bsp::tstr_uart_init str_uart_init = 
+  {
+    bsp::uart_parity_none,
+    bsp::uart_stop_1_bit,
+    bsp::uart_br_9600,
+    false
+  };
+  const char ach_test [] = {"Tick \r\n"};
+  gobj_led_0.init();
+  gobj_led_1.init();
+  gobj_led_2.init();
+  gobj_led_3.init();
 
-  obj_led_0.toggle();
-  obj_led_1.toggle();
+  gobj_led_0.toggle();
+  gobj_led_1.toggle();
+  
+  gobj_uart0.init(str_uart_init);
   while (1)
   {
     volatile uint32_t u32_cnt;
     for(u32_cnt = 0u; u32_cnt < 2000000; u32_cnt++);
-    obj_led_0.toggle();
-    obj_led_3.toggle();
+    gobj_led_0.toggle();
+    gobj_led_3.toggle();
     for(u32_cnt = 0u; u32_cnt < 2000000; u32_cnt++);
-    obj_led_1.toggle();
-    obj_led_2.toggle();
+    gobj_led_1.toggle();
+    gobj_led_2.toggle();
+    gobj_uart0.tx(ach_test, sizeof(ach_test), nullptr);
   }
   return 0;
 }

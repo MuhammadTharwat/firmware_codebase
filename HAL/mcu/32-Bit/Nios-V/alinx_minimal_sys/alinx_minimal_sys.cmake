@@ -24,7 +24,7 @@ endif()
 set(OBJECT_GEN_FLAGS "${OPTIMIZATION_LEVEL} ${DEBUG_INFORMATION_LEVEL} ${APP_SPECIFIC_FLAGS} -DCUSTOM_PRINTF_LIB")
 
 string(APPEND OBJECT_GEN_FLAGS " -DALT_SINGLE_THREADED -Wall -Wformat-security -Wunused-parameter  -Werror -Wformat -Wformat-security")
-string(APPEND OBJECT_GEN_FLAGS " -ffunction-sections -fdata-sections -fstack-protector-strong -march=rv32i -mabi=ilp32")
+string(APPEND OBJECT_GEN_FLAGS " -ffunction-sections -fdata-sections -march=rv32i -mabi=ilp32")
 string(APPEND OBJECT_GEN_FLAGS " -DALT_LOG_FLAGS=0 -DALT_NO_CLEAN_EXIT -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -D__hal__")
 
 
@@ -33,5 +33,4 @@ set(CMAKE_CXX_FLAGS "${OBJECT_GEN_FLAGS} -std=c++17 -fno-exceptions -fno-threads
 set(CMAKE_ASM_FLAGS "${OBJECT_GEN_FLAGS} -Wa,-gdwarf2 -x assembler-with-cpp" CACHE INTERNAL "ASM Compiler options")
 
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections -T${LINKER_SCRIPT} -Wl,-Map=${CMAKE_PROJECT_NAME}.map -march=rv32i -mabi=ilp32 -nostdlib" CACHE INTERNAL "Linker options")
-
-
+link_libraries(c gcc)

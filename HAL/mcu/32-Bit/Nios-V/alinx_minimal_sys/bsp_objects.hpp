@@ -13,6 +13,7 @@
 #include "cstdint"
 #include <stddef.h>
 #include <noncopyable.hpp>
+
 /***********************************************  Defines    **************************************************/
 /***********************************************  Constants   *************************************************/
 /***********************************************  Enumerations   **********************************************/
@@ -59,10 +60,10 @@ namespace bsp
     {
     public:
         ~uart_dev() = default;
-        uart_dev(std::uintmax_t uint_idx) : u32_idx(uint_idx)
+        uart_dev(std::uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
         {
         }
-        std::uint32_t u32_idx;
+        std::uint32_t u32_base_addr;
     };
 }
 

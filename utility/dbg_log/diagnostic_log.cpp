@@ -9,7 +9,6 @@
 */
 
 #include <cstring>
-#include <iostream>
 #include "diagnostic_log.hpp"
 #include <cstdlib>  
 #include <algorithm>

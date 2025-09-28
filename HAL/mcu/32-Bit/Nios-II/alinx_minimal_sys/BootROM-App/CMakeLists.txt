@@ -13,7 +13,7 @@ add_executable(${EXECUTABLE} ${SOURCE_FILES})
 set(OPTIMIZATION_LEVEL 			-Os)
 
 ############################### Define Debug Information Level #############################
-set(DEBUG_INFORMATION_LEVEL 	-g)
+set(DEBUG_INFORMATION_LEVEL 	-g3)
 ############################### App Specific Flags ##################
 set(APP_SPECIFIC_FLAGS		"-DDIAGNOSTIC_LOG")
 

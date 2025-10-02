@@ -49,10 +49,10 @@ namespace bsp
     {
     public:
         ~spi_dev() = default;
-        spi_dev(std::uintmax_t uint_idx) : u32_idx(uint_idx)
+        spi_dev(std::uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
         {
         }
-        std::uint32_t u32_idx;
+        std::uint32_t u32_base_addr;
     };
 
     /*UART Object*/

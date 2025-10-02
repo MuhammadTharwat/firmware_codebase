@@ -19,7 +19,7 @@
 #define M25P64_ERR_WRONG_SIGNATURE INT16_C(M25P64_ERROR_BASE - 1)
 /***********************************************  Constants   *************************************************/
 static constexpr std::uint32_t gu32_mtx_timeout_ms = UINT32_C(1000);
-static constexpr std::uint32_t gu32_spi_speed_factor = UINT32_C(M25P64_SPI_SPEED_FACTOR);
+static constexpr std::uint16_t gu16_spi_speed_factor = UINT16_C(M25P64_SPI_SPEED_FACTOR);
 
 /*Instructions*/
 static constexpr std::uint8_t gu8_read_signature = UINT8_C(0xAB);
@@ -52,7 +52,7 @@ std::int16_t m25p64::verify_electonic_signature(void)
 
     if (GENERIC_SUCCESS == s16_ret)
     {
-        s16_ret = rspi.init(gu32_spi_speed_factor, bsp::cpol_low_cpha_low);
+        s16_ret = rspi.init(gu16_spi_speed_factor, bsp::cpol_low_cpha_low, true);
     }
     else
     {

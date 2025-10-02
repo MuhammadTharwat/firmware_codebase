@@ -33,17 +33,18 @@ namespace bsp
     public:
         spi(spi_dev &);
         ~spi(void) = default;
-        std::int16_t init(std::uint32_t, tenu_spi_mode);
+        std::int16_t init(std::uint16_t, tenu_spi_mode, bool);
         std::int16_t deinit(void) const;
-        std::int16_t tx(void *, std::size_t, tpfun_spi_tx_cb);
+        std::int16_t tx(const void *, std::size_t, tpfun_spi_tx_cb);
         std::int16_t rx(void *, std::size_t, tpfun_spi_rx_cb);
         rtos_osal::mutex mtx;
 
     private:
-        std::uint32_t u32_spi_clk_divisor;
+        std::uint16_t u16_spi_clk_divisor;
         tenu_spi_mode enu_spi_mode;
         tpfun_spi_tx_cb pfun_tx_cb;
         tpfun_spi_rx_cb pfun_rx_cb;
+        spi_dev &rspi_dev;
     };
 
     spi_dev &get_spi_dev(std::uintmax_t);

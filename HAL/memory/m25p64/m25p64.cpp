@@ -17,11 +17,14 @@
 #endif
 
 #define M25P64_ERR_WRONG_SIGNATURE INT16_C(M25P64_ERROR_BASE - 1)
+#define M25P64_ERR_WRONG_ID INT16_C(M25P64_ERROR_BASE - 2)
 /***********************************************  Constants   *************************************************/
 static constexpr std::uint32_t gu32_mtx_timeout_ms = UINT32_C(1000);
 static constexpr std::uint16_t gu16_spi_speed_factor = UINT16_C(M25P64_SPI_SPEED_FACTOR);
 
 /*Instructions*/
+static constexpr std::uint8_t gu8_read_identification = UINT8_C(0x9F);
+static constexpr std::uint8_t gau8_rdid[3] = {0x20, 0x20, 0x17};
 static constexpr std::uint8_t gu8_read_signature = UINT8_C(0xAB);
 static constexpr std::uint8_t gu8_signature_value = UINT8_C(0x16);
 /************************************************** Global Variables **************************************************/
@@ -41,6 +44,56 @@ std::int16_t m25p64::program_page(std::uint32_t u32_addr, const void *pv_data, s
     (void)(pv_data);
     (void)(u8_len);
     return GENERIC_SUCCESS;
+}
+
+std::int16_t m25p64::verify_identification(void)
+{
+    std::int16_t s16_ret;
+    std::uint8_t au8_bytes[4u];
+
+    s16_ret = (rtos_osal::osal_success == rspi.mtx.lock(gu32_mtx_timeout_ms)) ? GENERIC_SUCCESS : OSAL_ERR_BASE;
+
+    if (GENERIC_SUCCESS == s16_ret)
+    {
+        s16_ret = rspi.init(gu16_spi_speed_factor, bsp::cpol_low_cpha_low, true);
+    }
+    else
+    {
+        /*Do nothing*/
+    }
+
+    if (GENERIC_SUCCESS == s16_ret)
+    {
+        rcs.write(bsp::pin_state_low);
+        au8_bytes[0] = gu8_read_identification;
+        s16_ret = rspi.tx(au8_bytes, 1, nullptr);
+    }
+    else
+    {
+        /*Do nothing*/
+    }
+
+    if (GENERIC_SUCCESS == s16_ret)
+    {
+        s16_ret = rspi.rx(au8_bytes, 3u, nullptr);
+    }
+    else
+    {
+        /*Do nothing*/
+    }
+
+    if (GENERIC_SUCCESS == s16_ret)
+    {
+        s16_ret = (0 == std::memcmp(au8_bytes, gau8_rdid, sizeof(gau8_rdid))) ? GENERIC_SUCCESS : M25P64_ERR_WRONG_ID;
+    }
+    else
+    {
+        /*Do nothing*/
+    }
+
+    rcs.write(bsp::pin_state_high);
+    rspi.mtx.unlock();
+    return s16_ret;
 }
 
 std::int16_t m25p64::verify_electonic_signature(void)

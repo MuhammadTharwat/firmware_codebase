@@ -18,21 +18,15 @@
 #endif
 
 #if defined DIAGNOSTIC_LOG
-#define   DIAGNOSTIC_LOG_STR_UINT(achrstr, uint_val, enu_radix, b_new_line) gobj_diagnostic_logger.log_str_uint(achrstr, uint_val, enu_radix, b_new_line)  
-#define   DIAGNOSTIC_LOG_STR_SINT(achrstr, sint_val, b_new_line) gobj_diagnostic_logger.log_str_sint(achrstr, sint_val, b_new_line)             
-#define   DIAGNOSTIC_LOG_STR(achrstr, b_new_line) gobj_diagnostic_logger.log_str(achrstr, b_new_line)                                                                             
+#define DIAGNOSTIC_LOG_STR_UINT(achrstr, uint_val, enu_radix, b_new_line) gobj_diagnostic_logger.log_str_uint(achrstr, uint_val, enu_radix, b_new_line)
+#define DIAGNOSTIC_LOG_STR_SINT(achrstr, sint_val, b_new_line) gobj_diagnostic_logger.log_str_sint(achrstr, sint_val, b_new_line)
+#define DIAGNOSTIC_LOG_STR(achrstr, b_new_line) gobj_diagnostic_logger.log_str(achrstr, b_new_line)
+#define DIAGNOSTIC_LOG_ASSERT(archstr, uint_line_nr, b_new_line) gobj_diagnostic_logger.log_assert(archstr, uint_line_nr, b_new_line)
 #else
-#define   DIAGNOSTIC_LOG_STR_U8(achrstr, u8_val, enu_radix, b_new_line) ((void) 0)
-#define   DIAGNOSTIC_LOG_STR_U16(achrstr, u16_val, enu_radix, b_new_line) ((void) 0)
-#define   DIAGNOSTIC_LOG_STR_U32(achrstr, u32_val, enu_radix, b_new_line) ((void) 0)         
-#define   DIAGNOSTIC_LOG_STR_U64(achrstr, u64_val, enu_radix, b_new_line) ((void) 0)   
-#define   DIAGNOSTIC_LOG_STR_S8(achrstr, s8_val, b_new_line)   ((void) 0)
-#define   DIAGNOSTIC_LOG_STR_S16(achrstr, s16_val, b_new_line) ((void) 0)               
-#define   DIAGNOSTIC_LOG_STR_S32(achrstr, s32_val, b_new_line) ((void) 0)               
-#define   DIAGNOSTIC_LOG_STR_S64(achrstr, s64_val, b_new_line) ((void) 0)              
-#define   DIAGNOSTIC_LOG_STR_FLT(achrstr, flt_val, b_new_line) ((void) 0)       
-#define   DIAGNOSTIC_LOG_STR(achrstr, b_new_line) ((void) 0)     
-#define   DIAGNOSTIC_LOG_ASSERT(archstr, u32_line,b_new_line) ((void) 0)           
+#define DIAGNOSTIC_LOG_STR_UINT(achrstr, uint_val, enu_radix, b_new_line) ((void)0)
+#define DIAGNOSTIC_LOG_STR_SINT(achrstr, sint_val, b_new_line) ((void)0)
+#define DIAGNOSTIC_LOG_STR(achrstr, b_new_line) ((void)0)
+#define DIAGNOSTIC_LOG_ASSERT(archstr, u32_line, b_new_line) ((void)0)
 #endif
 /***********************************************  Enumerations   **********************************************/
 typedef enum
@@ -99,7 +93,7 @@ public:
    * @param [in] b_new_line
    * @return none
    */
-  void log_assert(const char *, uint32_t, bool);
+  void log_assert(const char *, std::uint32_t, bool);
 
 private:
   bsp::uart &ruart;

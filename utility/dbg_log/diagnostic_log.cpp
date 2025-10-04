@@ -169,3 +169,8 @@ void diagnostic_logger::log_str_uint(const char *pchr_str, std::uint64_t u64_val
 	this->ruart.tx(achr_digits, std::strlen(achr_digits), nullptr);
 	this->mtx_ring_buff.unlock();
 }
+
+void diagnostic_logger::log_assert(const char *pchar_str, std::uint32_t u32_val, bool b_new_line)
+{
+	this->log_str_uint(pchar_str, static_cast<std::uint64_t>(u32_val), radix_decimal, b_new_line);
+}

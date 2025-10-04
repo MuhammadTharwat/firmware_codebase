@@ -22,7 +22,10 @@
 #include "bsp_led.hpp"
 #include "bsp_sys.hpp"
 #include "bsp_uart.hpp"
+#include "bsp_spi.hpp"
 #include "diagnostic_log.hpp"
+#include "m25p64.hpp"
+#include "general_includes.hpp"
 /***********************************************  Defines    **************************************************/
 
 /***********************************************  Constants   *************************************************/
@@ -30,14 +33,19 @@
 /******************************************* Local functions prototypes **************************************/
 /******************************************* Local function implementation ***********************************/
 //static bsp::sys *pobj_sys{&bsp::sys::get_instance()};
-static bsp::led gobj_led_0{bsp::get_led_dev(0)};
-static bsp::led gobj_led_1{bsp::get_led_dev(1)};
-static bsp::led gobj_led_2{bsp::get_led_dev(2)};
-static bsp::led gobj_led_3{bsp::get_led_dev(3)};
+static bsp::led gobj_led_0(bsp::get_led_dev(0));
+static bsp::led gobj_led_1(bsp::get_led_dev(1));
+static bsp::led gobj_led_2(bsp::get_led_dev(2));
+static bsp::led gobj_led_3(bsp::get_led_dev(3));
 
 /*UART */
-static bsp::uart gobj_uart0{bsp::get_uart_dev(0)};
+static bsp::uart gobj_uart0(bsp::get_uart_dev(0));
 diagnostic_logger gobj_diagnostic_logger(gobj_uart0);
+
+/*SPI*/
+static bsp::spi gobj_spi(bsp::get_spi_dev(0));
+static bsp::output gobj_output(bsp::get_io_dev(0));
+static m25p64 gobj_m25p64(gobj_spi, gobj_output);
 int main(void)
 {
   const bsp::tstr_uart_init str_uart_init = 
@@ -56,6 +64,11 @@ int main(void)
   gobj_led_1.toggle();
   
   gobj_uart0.init(str_uart_init);
+
+  _ASSERT(GENERIC_SUCCESS == gobj_m25p64.verify_electonic_signature());
+
+  _ASSERT(GENERIC_SUCCESS == gobj_m25p64.verify_identification());
+
   while (1)
   {
     volatile uint32_t u32_cnt;
@@ -65,7 +78,10 @@ int main(void)
     for(u32_cnt = 0u; u32_cnt < 2000000; u32_cnt++);
     gobj_led_1.toggle();
     gobj_led_2.toggle();
-    DIAGNOSTIC_LOG_STR("Ticking", true);
   }
   return 0;
+}
+
+void system_assertion_action(void)
+{
 }

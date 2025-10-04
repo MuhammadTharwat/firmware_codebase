@@ -106,6 +106,8 @@ set_source_files_properties(${ALTERA_FILES} PROPERTIES COMPILE_FLAGS "-Wno-unuse
 add_library(${PROJECT_NAME} STATIC ${ALTERA_FILES} 
                                     ./bsp_led.cpp
                                     ./bsp_uart.cpp
+                                    ./bsp_spi.cpp
+                                    ./bsp_io.cpp
                                     )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${ALTERA_INCLUDE_DIR}
@@ -113,7 +115,8 @@ target_include_directories (${PROJECT_NAME} PRIVATE ${ALTERA_INCLUDE_DIR}
 
 target_include_directories (${PROJECT_NAME}  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../bsp/v1
-                                                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../common)
+                                                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../common
+                                                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utility/dbg_log)
 
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE  )

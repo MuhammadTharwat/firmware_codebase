@@ -29,6 +29,7 @@ public:
     ~m25p64() = default;
     std::int16_t program_page(std::uint32_t, const void *, std::uint8_t);
     std::int16_t verify_electonic_signature(void);
+    std::int16_t verify_identification(void);
     std::int16_t read(std::uint32_t, void *, std::uint32_t);
 
 private:

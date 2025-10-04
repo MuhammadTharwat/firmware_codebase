@@ -15,7 +15,9 @@
 #include "stdint.h"
 #include "stdbool.h"
 #include "stddef.h"
+#include <cstring>
 #include "error_code.hpp"
+#include "assertion.hpp"
 /***********************************************  Defines    **************************************************/
 
 /***********************************************  Constants   *************************************************/

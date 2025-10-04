@@ -101,7 +101,7 @@ namespace bsp
 
         if (GENERIC_SUCCESS == s16_ret)
         {
-            IOWR_CFG_REG(this->ruart_dev.u32_base_addr, u32_reg);
+            IOWR_CFG_REG(this->rspi_dev.u32_base_addr, u32_reg);
         }
         else
         {
@@ -110,11 +110,6 @@ namespace bsp
 
         return s16_ret;
     }
-
-    void uart::deinit(void) const
-    {
-    }
-
 
     std::int16_t spi::tx(const void *pv_data, std::size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
     {
@@ -126,12 +121,12 @@ namespace bsp
             {
                 std::uint32_t u32_data;
                 /*Block on TX ready*/
-                while (!(IORD_STATUS_REG(this->ruart_dev.u32_base_addr) & SPI_TX_READY_MASK))
+                while (!(IORD_STATUS_REG(this->rspi_dev.u32_base_addr) & SPI_TX_READY_MASK))
                 {
                     /*Do nothing*/
                 }
                 u32_data = static_cast<std::uint32_t>(pu8_bytes[sz_idx]);
-                IOWR_TXR_REG(this->ruart_dev.u32_base_addr, u32_data);
+                IOWR_TXR_REG(this->rspi_dev.u32_base_addr, u32_data);
             }
         }
         else
@@ -143,20 +138,26 @@ namespace bsp
 
     std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
     {
-        if (nullptr == pfn_tx_handler)
+        if (nullptr == pfn_rx_handler)
         {
-            const std::uint8_t *pu8_bytes = static_cast<const std::uint8_t *>(pv_data);
+            std::uint8_t *pu8_bytes = static_cast<std::uint8_t *>(pv_data);
             /*Synchronous, blocking Tx*/
             for (std::size_t sz_idx = 0; sz_idx < sz_data_len; sz_idx++)
             {
                 std::uint32_t u32_data = 0;
                 /*Block on TX ready*/
-                while (!(IORD_STATUS_REG(this->ruart_dev.u32_base_addr) & SPI_TX_READY_MASK))
+                while (!(IORD_STATUS_REG(this->rspi_dev.u32_base_addr) & SPI_TX_READY_MASK))
                 {
                     /*Do nothing*/
                 }
-                IOWR_TXR_REG(this->ruart_dev.u32_base_addr, u32_data);
-                u32_data = IORD_RXR_REG(this->ruart_dev.u32_base_addr);
+                IOWR_TXR_REG(this->rspi_dev.u32_base_addr, u32_data);
+
+                /*Block until the byte has been shifted out*/
+                while (!(IORD_STATUS_REG(this->rspi_dev.u32_base_addr) & SPI_TX_READY_MASK))
+                {
+                    /*Do nothing*/
+                }
+                u32_data = IORD_RXR_REG(this->rspi_dev.u32_base_addr);
                 pu8_bytes[sz_idx] = static_cast<std::uint8_t>(u32_data);
             }
         }

@@ -7,6 +7,8 @@
   * @date			08-April-2024
   ******************************************************************************
 */
+#ifndef BSP_SPI_H_
+#define BSP_SPI_H_
 #include <cstdint>
 #include <stddef.h>
 #include <noncopyable.hpp>
@@ -49,3 +51,5 @@ namespace bsp
 
     spi_dev &get_spi_dev(std::uintmax_t);
 }
+
+#endif /*BSP_SPI_H_*/

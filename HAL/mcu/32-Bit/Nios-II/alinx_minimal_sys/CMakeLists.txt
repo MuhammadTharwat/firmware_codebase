@@ -2,7 +2,13 @@ cmake_minimum_required (VERSION 3.8)
  
 project(ALINX_MINIMAL_SYS)
 
-set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/bsp_hal/linker.x)
+if(BOOTROM)
+    message(STATUS "BOOT ROM Build")
+    set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/bootrom_linker.x)
+else()
+    message(STATUS "Application Build")
+    set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/application_linker.x)
+endif()
 						
 include(${CMAKE_CURRENT_SOURCE_DIR}/alinx_minimal_sys.cmake)
 

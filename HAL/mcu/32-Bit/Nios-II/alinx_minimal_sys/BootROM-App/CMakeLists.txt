@@ -40,5 +40,4 @@ target_link_libraries(${EXECUTABLE} PUBLIC diagnostic_log)
 add_custom_command(TARGET ${EXECUTABLE}
         POST_BUILD
         COMMAND ${TOOLCHAIN_PREFIX}size ${EXECUTABLE}
-        COMMAND ${TOOLCHAIN_PREFIX}objcopy -O binary ${EXECUTABLE} ${PROJECT_NAME}.bin
-        COMMAND ${TOOLCHAIN_PREFIX}objcopy -I binary -O ihex --adjust-vma=0x000000 ${PROJECT_NAME}.bin ${PROJECT_NAME}.hex)
+        COMMAND elf2hex ${EXECUTABLE} -o ${PROJECT_NAME}.hex -b 0x00010000 -w 32 -e 0x00013FFF -r 4)

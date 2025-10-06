@@ -34,11 +34,12 @@ namespace bsp
 	{
 		public:
       ~sys(void) = default;
-			std::int16_t get_id(std::uint8_t au8_sys_id[ID_LEN]) const;
+      std::int16_t get_id(std::uint8_t au8_sys_id[ID_LEN]) const;
       std::uint32_t get_cpu_frequency(void) const;
       tenu_reset_cause get_reset_cause(void) const;
       void reset(void) const;
       void sleep(void) const;
+      void boot_image(std::uint32_t);
       static sys &get_instance(void);
     private:
       sys(void);

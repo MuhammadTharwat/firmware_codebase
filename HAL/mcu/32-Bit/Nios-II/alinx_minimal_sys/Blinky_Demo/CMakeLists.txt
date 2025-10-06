@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 set(CMAKE_TOOLCHAIN_FILE "../toolchain.cmake")
 
-set(PROJECT_NAME BootROM-alinx-minimal-sys)
+set(PROJECT_NAME Blinky-alinx-minimal-sys)
 
 project(${PROJECT_NAME} C CXX ASM)
 

@@ -23,16 +23,13 @@
 
 /*********************************************** Data types  **************************************************/
 
+extern "C" void boot_image_wrapper(std::uint32_t);
+
 namespace bsp
 {
     sys::sys(void)
     {
-#ifdef DEBUG_MODE
-        _ASSERT(GENERIC_SUCCESS == dgb_log_init(LOG_BAUDRATE));
-#endif
-#ifdef DIAGNOSTIC_LOG
-        _ASSERT(GENERIC_SUCCESS == diagnostic_log_init(LOG_BAUDRATE));
-#endif
+
     }
 
     sys &sys::get_instance(void)
@@ -65,5 +62,10 @@ namespace bsp
     void sys::sleep(void) const
     {
         
+    }
+
+    void sys::boot_image(std::uint32_t u32_image_addr)
+    {
+        boot_image_wrapper(u32_image_addr);
     }
 }

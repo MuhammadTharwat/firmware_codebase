@@ -114,6 +114,8 @@ add_library(${PROJECT_NAME} STATIC ${ALTERA_FILES}
                                     ./bsp_uart.cpp
                                     ./bsp_spi.cpp
                                     ./bsp_io.cpp
+                                    ./bsp_sys.cpp
+                                    ./boot_image.S
                                     )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${ALTERA_INCLUDE_DIR}

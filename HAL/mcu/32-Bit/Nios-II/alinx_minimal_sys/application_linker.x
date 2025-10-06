@@ -51,6 +51,10 @@
 RESET_VECTOR_LENGTH = 32;
 DDR2_TOTAL_LENGTH = 0x10000000;
 DDR2_START_ADDRESS = 0x20000000;
+
+STACK_SIZE = 1M;
+HEAP_SIZE = 1M;
+
 MEMORY
 {
     reset : ORIGIN = DDR2_START_ADDRESS, LENGTH = RESET_VECTOR_LENGTH
@@ -365,15 +369,10 @@ SECTIONS
 /* provide a pointer for the stack */
 
 /*
- * Don't override this, override the __alt_stack_* symbols instead.
- */
-__alt_data_end = 0x14000;
-
-/*
  * The next two symbols define the location of the default stack.  You can
  * override them to move the stack to a different memory.
  */
-PROVIDE( __alt_stack_pointer = __alt_data_end );
+PROVIDE( __alt_stack_pointer = __alt_stack_base + STACK_SIZE);
 PROVIDE( __alt_stack_limit   = __alt_stack_base );
 
 /*
@@ -382,5 +381,5 @@ PROVIDE( __alt_stack_limit   = __alt_stack_base );
  * allocated to the heap.
  * Override this symbol to put the heap in a different memory.
  */
-PROVIDE( __alt_heap_start    = end );
-PROVIDE( __alt_heap_limit    = 0x14000 );
+PROVIDE( __alt_heap_start    = __alt_stack_pointer );
+PROVIDE( __alt_heap_limit    = __alt_stack_pointer + HEAP_SIZE);

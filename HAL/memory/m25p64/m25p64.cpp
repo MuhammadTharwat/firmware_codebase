@@ -13,7 +13,7 @@
 
 /***********************************************  Defines    **************************************************/
 #ifndef M25P64_SPI_SPEED_FACTOR
-#define M25P64_SPI_SPEED_FACTOR 32
+#define M25P64_SPI_SPEED_FACTOR 4
 #endif
 
 #define M25P64_ERR_WRONG_SIGNATURE INT16_C(M25P64_ERROR_BASE - 1)

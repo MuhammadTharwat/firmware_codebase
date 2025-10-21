@@ -2,7 +2,6 @@
 #include "sleep.h"
 #include "xparameters.h"
 #include "xgpiops.h"
-#include "xqspips_hw.h"
 #include "xil_misc_psreset_api.h"
 
 #define GPIO_DEVICE_ID		XPAR_XGPIOPS_0_DEVICE_ID

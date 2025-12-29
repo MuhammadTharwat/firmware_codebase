@@ -1,5 +1,5 @@
 # ====== Generate baremetal bsp ======
-set hw_file "./hamgeek_zynq7010.xsa"
+set hw_file "./hamgeek_zynq7010_sdr.xsa"
 set workspace "./standalone_bsp"
 set platform_name "zynq_platform"
 set domain_name "standalone_domain"
@@ -30,14 +30,14 @@ app build -name $fsbl_name
 
 
 ## Load the new fsbl and bitstream
-connect
+#connect
 
-targets 2
+#targets 2
 
-rst
+#rst
 
-fpga -f ./standalone_bsp/a9_fsbl/_ide/bitstream/sdr_wrapper.bit
-dow ./standalone_bsp/a9_fsbl/Debug/a9_fsbl.elf
-con 
+#fpga -f ./standalone_bsp/a9_fsbl/_ide/bitstream/sdr_wrapper.bit
+#dow ./standalone_bsp/a9_fsbl/Debug/a9_fsbl.elf
+#con 
 
 

@@ -37,9 +37,10 @@
 int16_t diagnostic_log_write(const void *pv_data, size_t sz_len);
 int16_t diagnostic_log_write_assert(const void *pv_data, size_t sz_len);
 /******************************************* Local functions prototypes **************************************/
-
+static void u64_to_str(char *pchr_buff, uint64_t u64_val, tenu_radix enu_radix, bool b_new_line);
+static void s64_to_str(char *pchr_buff, int64_t s64_val, bool b_new_line);
 /******************************************* Local function implementation ***********************************/
-void u64_to_str(char *pchr_buff, uint64_t u64_val, tenu_radix enu_radix, bool b_new_line)
+static void u64_to_str(char *pchr_buff, uint64_t u64_val, tenu_radix enu_radix, bool b_new_line)
 {
 	uint8_t u8_idx = 0;
 
@@ -130,18 +131,70 @@ void u64_to_str(char *pchr_buff, uint64_t u64_val, tenu_radix enu_radix, bool b_
 	}
 	std::reverse(pchr_buff, pchr_buff + u8_idx);
 }
+/***************************** Signed *****************************************/
+static void s64_to_str(char *pchr_buff, int64_t s64_val, bool b_new_line)
+{
+	uint8_t u8_idx = 0;
+	bool b_is_minus = false;
+	if (true == b_new_line)
+	{
+		pchr_buff[u8_idx] = '\n';
+		u8_idx++;
+	}
+	else
+	{
+		/*do nothing*/
+	}
+
+	if(0 > s64_val)
+	{
+		b_is_minus = true;
+		s64_val *= -1;
+		u8_idx++;
+	}
+	else
+	{
+		/*do nothing*/
+	}
+
+	if (0 == s64_val)
+	{
+		pchr_buff[u8_idx] = '0';
+		u8_idx++;
+	}
+	else
+	{
+		/*do nothing*/
+	}
+
+	while (s64_val)
+	{
+		pchr_buff[u8_idx] = s64_val % 10 + '0';
+		s64_val /= 10;
+		u8_idx++;
+	}
+	if(true == b_is_minus)
+	{
+		pchr_buff[u8_idx] = '-';
+		u8_idx++;
+	}
+	else
+	{
+		/*do nothing*/
+	}
+	std::reverse(pchr_buff, pchr_buff + u8_idx);
+}
+
 /************************************API Implementation********************************/
 
-diagnostic_logger::diagnostic_logger(bsp::uart &ruart_in) : ruart(ruart_in),
-															u32_rd_idx(0),
-															u32_wr_idx(0)
+diagnostic_logger::diagnostic_logger(bsp::uart &ruart_in) : ruart(ruart_in)
 {
 	/*Do nothing*/
 }
 
 void diagnostic_logger::log_str(const char *pchar_str, bool b_new_line)
 {
-	this->mtx_ring_buff.lock(DIAGNOSTIC_LOGGER_MTX_TIMEOUT);
+	this->ruart.obj_mtx.lock(DIAGNOSTIC_LOGGER_MTX_TIMEOUT);
 	this->ruart.tx(pchar_str, std::strlen(pchar_str), nullptr);
 	if (true == b_new_line)
 	{
@@ -151,26 +204,56 @@ void diagnostic_logger::log_str(const char *pchar_str, bool b_new_line)
 	{
 		/*Do nothing*/
 	}
-	this->mtx_ring_buff.unlock();
+	this->ruart.obj_mtx.unlock();
 }
 
 void diagnostic_logger::log_str_uint(const char *pchar_str, std::uint8_t u8_val, tenu_radix enu_radix, bool b_new_line)
 {
-	this->log_str_uint(pchar_str, static_cast<std::uint64_t>(u8_val), enu_radix, b_new_line);
+	this->log_str_uint(pchar_str,static_cast<std::uint64_t>(u8_val), enu_radix, b_new_line);
+}
+
+void diagnostic_logger::log_str_uint(const char *pchr_str, std::uint16_t u16_val, tenu_radix enu_radix, bool b_new_line)
+{
+	this->log_str_uint(pchr_str,static_cast<std::uint64_t>(u16_val), enu_radix, b_new_line);
+}
+
+void diagnostic_logger::log_str_uint(const char *pchr_str, std::uint32_t u32_val, tenu_radix enu_radix, bool b_new_line)
+{
+	this->log_str_uint(pchr_str,static_cast<std::uint64_t>(u32_val), enu_radix, b_new_line);
 }
 
 void diagnostic_logger::log_str_uint(const char *pchr_str, std::uint64_t u64_val, tenu_radix enu_radix, bool b_new_line)
 {
 	(void)(u64_val);
-	char achr_digits[DIAGNOSTIC_LOGGER_MAX_DIGITS];
-	this->mtx_ring_buff.lock(DIAGNOSTIC_LOGGER_MTX_TIMEOUT);
+	char achr_digits[DIAGNOSTIC_LOGGER_MAX_DIGITS] = {};
+	this->ruart.obj_mtx.lock(DIAGNOSTIC_LOGGER_MTX_TIMEOUT);
 	this->ruart.tx(pchr_str, std::strlen(pchr_str), nullptr);
 	u64_to_str(achr_digits, u64_val, enu_radix, b_new_line);
 	this->ruart.tx(achr_digits, std::strlen(achr_digits), nullptr);
-	this->mtx_ring_buff.unlock();
+	this->ruart.obj_mtx.unlock();
 }
 
-void diagnostic_logger::log_assert(const char *pchar_str, std::uint32_t u32_val, bool b_new_line)
+void diagnostic_logger::log_str_sint(const char *pchr_str, std::int8_t s8_val, bool b_new_line)
 {
-	this->log_str_uint(pchar_str, static_cast<std::uint64_t>(u32_val), radix_decimal, b_new_line);
+	this->log_str_sint(pchr_str, static_cast<std::int64_t>(s8_val), b_new_line);
+}
+
+void diagnostic_logger::log_str_sint(const char *pchr_str, std::int16_t s16_val, bool b_new_line)
+{
+	this->log_str_sint(pchr_str, static_cast<std::int64_t>(s16_val), b_new_line);
+}
+
+void diagnostic_logger::log_str_sint(const char *pchr_str, std::int32_t s32_val, bool b_new_line)
+{
+	this->log_str_sint(pchr_str, static_cast<std::int64_t>(s32_val), b_new_line);
+}
+
+void diagnostic_logger::log_str_sint(const char *pchr_str, std::int64_t s64_val, bool b_new_line)
+{
+	char achr_digits[DIAGNOSTIC_LOGGER_MAX_DIGITS];
+	this->ruart.obj_mtx.lock(DIAGNOSTIC_LOGGER_MTX_TIMEOUT);
+	this->ruart.tx(pchr_str, std::strlen(pchr_str), nullptr);
+	s64_to_str(achr_digits, s64_val, b_new_line);
+	this->ruart.tx(achr_digits, std::strlen(achr_digits), nullptr);
+	this->ruart.obj_mtx.unlock();
 }

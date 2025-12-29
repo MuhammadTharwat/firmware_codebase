@@ -21,7 +21,7 @@ set(DEBUG_INFORMATION_LEVEL 	-g3)
 set(APP_SPECIFIC_FLAGS		"")
 
 add_subdirectory(../ ./hamgeek_zynq_7010_sdr)
-target_link_libraries(${EXECUTABLE} PUBLIC hamgeek_zynq_7010_sdr)
+target_link_libraries(${EXECUTABLE} PUBLIC hamgeek_zynq_7010_sdr gcc c m)
 
 target_compile_definitions(${EXECUTABLE} PRIVATE)
 

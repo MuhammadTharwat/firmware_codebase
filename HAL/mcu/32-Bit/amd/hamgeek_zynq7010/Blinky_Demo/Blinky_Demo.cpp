@@ -5,20 +5,30 @@
 #include "diagnostic_log.hpp"
 #include "general_includes.hpp"
 
-extern "C" void _init(void) {}
-extern "C" void _fini(void) {}
-
+static bsp::sys *pobj_sys{&bsp::sys::get_instance()};
 static bsp::led gobj_led_0(bsp::get_led_dev(0));
 
+static bsp::uart gobj_uart0{bsp::get_uart_dev(0)};
+diagnostic_logger gobj_diagnostic_logger(gobj_uart0);
 int main()
 {
+
+	const bsp::tstr_uart_init str_uart_init =
+		{
+			bsp::uart_parity_none,
+			bsp::uart_stop_1_bit,
+			bsp::uart_br_115200,
+			false};
+
+	gobj_uart0.init(str_uart_init);
 	gobj_led_0.init();
 	while(1)
 	{
+		DIAGNOSTIC_LOG_STR("Ticking . . ", true);
 		gobj_led_0.on();
-		for(volatile uint32_t i=0 ; i< 10000000; i++);
+		for(volatile uint32_t i=0 ; i< 20000000; i++);
 		gobj_led_0.off();
-		for(volatile uint32_t i=0 ; i< 10000000; i++);
+		for(volatile uint32_t i=0 ; i< 20000000; i++);
 	}
 	return 0;
 }

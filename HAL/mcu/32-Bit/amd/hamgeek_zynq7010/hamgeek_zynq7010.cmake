@@ -26,8 +26,9 @@ set(OBJECT_GEN_FLAGS "${OPTIMIZATION_LEVEL} ${DEBUG_INFORMATION_LEVEL} ${APP_SPE
 string(APPEND OBJECT_GEN_FLAGS " -Wall -Wformat-security -Wunused-parameter -Werror -Wformat -Wformat-security -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -ffreestanding -fno-builtin")
 string(APPEND OBJECT_GEN_FLAGS " -ffunction-sections -fdata-sections ")
 
-set(CMAKE_C_FLAGS "${OBJECT_GEN_FLAGS} -std=gnu11 " CACHE INTERNAL "C Compiler options")
-set(CMAKE_CXX_FLAGS "${OBJECT_GEN_FLAGS} -std=c++17 -fno-exceptions -fno-threadsafe-statics -fno-rtti" CACHE INTERNAL "C++ Compiler options")
-set(CMAKE_ASM_FLAGS "${OBJECT_GEN_FLAGS} -Wa,-gdwarf2 -x assembler-with-cpp" CACHE INTERNAL "ASM Compiler options")
+set(CMAKE_C_FLAGS "${OBJECT_GEN_FLAGS} -std=gnu11 -fno-strict-aliasing -fshort-enums " CACHE INTERNAL "C Compiler options")
+set(CMAKE_CXX_FLAGS "${OBJECT_GEN_FLAGS} -std=c++17 -fno-exceptions -fno-threadsafe-statics" CACHE INTERNAL "C++ Compiler options")
+set(CMAKE_ASM_FLAGS "${OBJECT_GEN_FLAGS} -x assembler-with-cpp " CACHE INTERNAL "ASM Compiler options")
 
-set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections -ffunction-sections -fdata-sections -nodefaultlibs -lc -lm -nostdlib -ffreestanding -T${LINKER_SCRIPT} -Wl,-Map=${CMAKE_PROJECT_NAME}.map" CACHE INTERNAL "Linker options")
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections -nostdlib -ffreestanding -T${LINKER_SCRIPT} -Wl,-Map=${CMAKE_PROJECT_NAME}.map" CACHE INTERNAL "Linker options")
+link_libraries(gcc c m)

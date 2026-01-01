@@ -28,7 +28,7 @@ extern void system_assertion_action(void);
 		{                                                                \
 			DIAGNOSTIC_LOG_STR("[ASSERT] in Function ", false);              \
 			DIAGNOSTIC_LOG_STR((char *)__FUNCTION__, false);                 \
-			DIAGNOSTIC_LOG_STR_UINT(" Line ", __LINE__, radix_decimal, true); \
+			DIAGNOSTIC_LOG_STR_UINT(" Line ", (std::uint64_t)__LINE__, radix_decimal, true); \
 			while (1)                                                    \
 			{                                                            \
 				system_assertion_action();                               \

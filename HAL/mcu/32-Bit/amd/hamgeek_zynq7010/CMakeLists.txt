@@ -19,21 +19,22 @@ set(ZYNQ7000_FILES
                 ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/xil_assert.c
                 ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/xplatform_info.c
                 ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/translation_table.S
+                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/_exit.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_g.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_hw.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_sinit.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_intr.c
+                ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/hw/ps7_init_gpl.c
 					)
 
-set(ZYNQ7000_INCLUDE_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/export/zynq_platform/sw/zynq_platform/standalone_domain/bspinclude/include
+set(ZYNQ7000_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/export/zynq_platform/sw/zynq_platform/standalone_domain/bspinclude/include
+                            ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/hw
 
                     )
 
 
-set_source_files_properties(${ZYNQ7000_FILES} PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter -Wno-maybe-uninitialized")
-
-add_library(${PROJECT_NAME} STATIC ${ZYNQ7000_FILES} 
+add_library(${PROJECT_NAME} OBJECT ${ZYNQ7000_FILES} 
                                     ./bsp_led.cpp
                                     ./bsp_uart.cpp
                                     ./bsp_spi.cpp

@@ -14,7 +14,6 @@
 #include <cstdint>
 #include <noncopyable.hpp>
 #include <mutex.hpp>
-#include "bsp_objects.hpp"
 /***********************************************  Defines    **************************************************/
 
 
@@ -25,6 +24,7 @@
 /*********************************************** Data types  **************************************************/
 namespace bsp
 {
+    class uart_dev; /* Forward declaration */
     enum tenu_uart_parity
     {
         uart_parity_none,
@@ -73,7 +73,7 @@ namespace bsp
         std::int16_t change_br(tenu_uart_baud_rate) const;
         std::int16_t tx(const void *, std::size_t, tpfn_uart_tx_handler) const;
         std::int16_t rx(void *, std::size_t, tpfn_uart_rx_handler, std::uint32_t) const;
-        rtos_osal::mutex mtx;
+        rtos_osal::mutex obj_mtx;
 
     private:
         uart_dev &ruart_dev;

@@ -1,0 +1,3 @@
+[submodule "HAL/mcu/32-Bit/amd/hamgeek_zynq7010/no-OS"]
+	path = HAL/mcu/32-Bit/amd/hamgeek_zynq7010/no-OS
+	url = https://github.com/analogdevicesinc/no-OS.git

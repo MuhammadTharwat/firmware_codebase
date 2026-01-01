@@ -9,6 +9,7 @@
  */
 #include "bsp_sys.hpp"
 #include "general_includes.hpp"
+#include "ps7_init_gpl.h"
 /******************************************   Macros **********************************************************/
 #define LOG_BAUDRATE            115200u
 
@@ -20,6 +21,8 @@
 /******************************************* Local Global Variables *******************************************/
 
 /******************************************* Local functions prototypes **************************************/
+extern "C" void _init(void) {}
+extern "C" void _fini(void) {}
 
 /*********************************************** Data types  **************************************************/
 
@@ -29,7 +32,7 @@ namespace bsp
 {
     sys::sys(void)
     {
-
+        ps7_init();
     }
 
     sys &sys::get_instance(void)

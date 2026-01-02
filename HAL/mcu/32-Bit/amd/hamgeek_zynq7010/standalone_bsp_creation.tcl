@@ -16,7 +16,7 @@ domain create -name $domain_name -os standalone -proc ps7_cortexa9_0
 
 domain active $domain_name
 
-bsp setlib -name xilffs
+bsp setlib -name xilffs libmetal openamp
 
 # For extra compiler flags, use ---> bsp config -append extra_compiler_flags -DTEST
 bsp config -append extra_compiler_flags "-Wl,--gc-sections -ffunction-sections -fdata-sections -Os"

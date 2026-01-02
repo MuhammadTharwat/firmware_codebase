@@ -22,11 +22,12 @@ namespace bsp
 {
     enum tenu_spi_mode
     {
-        cpol_low_cpha_low = 0,
-        cpol_low_cpha_high,
-        cpol_high_cpha_low,
-        cpol_high_cpha_high
+        spi_mode_pol_high_ph_1st_edge = 0,
+        spi_mode_pol_high_ph_2nd_edge,
+        spi_mode_pol_low_ph_1st_edge,
+        spi_mode_pol_low_ph_2nd_edge
     };
+    
     using tpfun_spi_tx_cb = void (*)(void);
     using tpfun_spi_rx_cb = void (*)(const void *pv_rx_data, size_t sz_len);
 

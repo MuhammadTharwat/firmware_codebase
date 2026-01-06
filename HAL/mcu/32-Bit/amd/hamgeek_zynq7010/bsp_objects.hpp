@@ -45,6 +45,7 @@ namespace bsp
         {
         }
         std::uint32_t u32_idx;
+        XGpioPs Gpio;
     };
 
     /*SPI Object*/

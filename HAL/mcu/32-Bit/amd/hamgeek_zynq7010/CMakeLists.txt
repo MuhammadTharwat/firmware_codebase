@@ -38,6 +38,7 @@ add_library(${PROJECT_NAME} OBJECT ${ZYNQ7000_FILES}
                                     ./bsp_led.cpp
                                     ./bsp_uart.cpp
                                     ./bsp_spi.cpp
+                                    ./bsp_io.cpp
                                     ./bsp_sys.cpp
                                     )
 

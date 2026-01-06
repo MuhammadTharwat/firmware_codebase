@@ -38,6 +38,8 @@ namespace bsp
         ~spi(void) = default;
         std::int16_t init(std::uint16_t, tenu_spi_mode, bool);
         std::int16_t deinit(void) const;
+        std::int16_t slave_enable(std::uint8_t);
+        std::int16_t slave_disable(std::uint8_t);
         std::int16_t tx(const void *, std::size_t, tpfun_spi_tx_cb);
         std::int16_t rx(void *, std::size_t, tpfun_spi_rx_cb);
         rtos_osal::mutex mtx;

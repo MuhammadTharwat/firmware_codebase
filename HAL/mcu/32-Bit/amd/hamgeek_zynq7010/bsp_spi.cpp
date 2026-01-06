@@ -80,6 +80,23 @@ namespace bsp
             /*Do nothing*/
         }
 
+        if (GENERIC_SUCCESS == s16_ret)
+        {
+            s32_status = XSpiPs_SelfTest(&rspi_dev.str_spi);
+            if (s32_status != XST_SUCCESS)
+            {
+                s16_ret = GENERIC_ERR_HW;
+            }
+            else
+            {
+                /*Do nothing*/
+            }
+        }
+        else
+        {
+            /*Do nothing*/
+        }
+
         switch (u16_spi_clk_divider)
         {
         case 4:
@@ -207,17 +224,74 @@ namespace bsp
         return s16_ret;
     }
 
+    std::int16_t spi::slave_enable(std::uint8_t u8_slave)
+    {
+        std::int16_t s16_ret = GENERIC_SUCCESS;
+        if (XST_SUCCESS != XSpiPs_SetSlaveSelect(&rspi_dev.str_spi, u8_slave))
+        {
+            s16_ret = GENERIC_ERR_HW;
+        }
+        else
+        {
+            /*Do nothing */
+        }
+        return s16_ret;
+    }
+
+    std::int16_t spi::slave_disable(std::uint8_t u8_slave)
+    {
+        (void)(u8_slave);
+        return GENERIC_ERR_HW;
+    }
+
     std::int16_t spi::tx(const void *pv_data, std::size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
     {
-        (void)(pv_data);
-        (void)(sz_data_len);
         std::int16_t s16_ret = GENERIC_SUCCESS;
         if (nullptr == pfn_tx_handler)
+        {
+                while (sz_data_len)
+                {
+                    std::int32_t s32_status;
+                    std::uint8_t au8_tmp[TEMP_BUFFER_SIZE];
+                    std::uint32_t u32_len;
+                    if (sz_data_len > TEMP_BUFFER_SIZE)
+                    {
+                        u32_len = TEMP_BUFFER_SIZE;
+                    }
+                    else
+                    {
+                        u32_len = static_cast<std::uint32_t>(sz_data_len);
+                    }
+
+                    std::memcpy(au8_tmp, pv_data, u32_len);
+
+                    s32_status = XSpiPs_PolledTransfer(&rspi_dev.str_spi, au8_tmp, nullptr, u32_len);
+                    if (XST_SUCCESS == s32_status)
+                    {
+                        s16_ret = GENERIC_SUCCESS;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    sz_data_len -= u32_len;
+            }
+        }
+        else
+        {
+            /*Asynchronous Tx*/
+        }
+        return s16_ret;
+    }
+
+    std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
+    {
+        std::int16_t s16_ret = GENERIC_SUCCESS;
+        if (nullptr == pfn_rx_handler)
         {
             while (sz_data_len)
             {
                 std::int32_t s32_status;
-                std::uint8_t au8_tmp[TEMP_BUFFER_SIZE];
                 std::uint32_t u32_len;
                 if (sz_data_len > TEMP_BUFFER_SIZE)
                 {
@@ -228,9 +302,9 @@ namespace bsp
                     u32_len = static_cast<std::uint32_t>(sz_data_len);
                 }
 
-                std::memcpy(au8_tmp, pv_data, u32_len);
+                std::memset(pv_data, 0x00, u32_len);
 
-                s32_status = XSpiPs_PolledTransfer(&rspi_dev.str_spi, au8_tmp, au8_tmp, u32_len);
+                s32_status = XSpiPs_PolledTransfer(&rspi_dev.str_spi, reinterpret_cast<std::uint8_t *>(pv_data), reinterpret_cast<std::uint8_t *>(pv_data), u32_len);
                 if (XST_SUCCESS == s32_status)
                 {
                     s16_ret = GENERIC_SUCCESS;
@@ -244,29 +318,14 @@ namespace bsp
         }
         else
         {
-            /*Asynchronous Tx*/
+            /*Asynchronous Rx*/
         }
         return s16_ret;
     }
 
-    std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
-    {
-        (void)(pv_data);
-        (void)(sz_data_len);
-        if (nullptr == pfn_rx_handler)
+        spi_dev &get_spi_dev(std::uintmax_t uint_dev)
         {
-
+            static spi_dev spi_devs[MAX_NUM_SPIs] = {{SPI_DEVICE_ID}};
+            return spi_devs[uint_dev];
         }
-        else
-        {
-            /*Asynchronous Tx*/
-        }
-        return GENERIC_SUCCESS;
     }
-
-    spi_dev &get_spi_dev(std::uintmax_t uint_dev)
-    {
-        static spi_dev spi_devs[MAX_NUM_SPIs] = {{SPI_DEVICE_ID}};
-        return spi_devs[uint_dev];
-    }
-}

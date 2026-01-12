@@ -10,21 +10,21 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/hamgeek_zynq7010.cmake)
 
 set(ZYNQ700_BSP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/ps7_cortexa9_0/standalone_domain/bsp/ps7_cortexa9_0/libsrc)
 set(ZYNQ7000_FILES 
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/arm/cortexa9/gcc/xil-crt0.S
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/arm/cortexa9/gcc/boot.S
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/arm/cortexa9/gcc/asm_vectors.S
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/xtime_l.c
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/xil_exception.c
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/vectors.c
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/xil_assert.c
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/xplatform_info.c
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/translation_table.S
-                ${ZYNQ700_BSP_DIR}/standalone_v9_2/src/_exit.c
-                ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_g.c
-                ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops.c
-                ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_hw.c
-                ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_sinit.c
-                ${ZYNQ700_BSP_DIR}/gpiops_v3_13/src/xgpiops_intr.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/arm/cortexa9/gcc/xil-crt0.S
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/arm/cortexa9/gcc/boot.S
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/arm/cortexa9/gcc/asm_vectors.S
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/xtime_l.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/xil_exception.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/vectors.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/xil_assert.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/xplatform_info.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/translation_table.S
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/_exit.c
+                ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops_g.c
+                ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops.c
+                ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops_hw.c
+                ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops_sinit.c
+                ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops_intr.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/hw/ps7_init_gpl.c
 					)
 

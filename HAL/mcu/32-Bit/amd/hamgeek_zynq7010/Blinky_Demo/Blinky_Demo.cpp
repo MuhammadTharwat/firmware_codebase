@@ -31,7 +31,7 @@ void spi_init(void)
 						  XSPIPS_CLK_PHASE_1_OPTION	| XSPIPS_FORCE_SSELECT_OPTION);
 
 	/* AD9361-safe clock */
-	XSpiPs_SetClkPrescaler(&Spi, XSPIPS_CLK_PRESCALE_64);
+	XSpiPs_SetClkPrescaler(&Spi, XSPIPS_CLK_PRESCALE_128);
 
 	XSpiPs_Enable(&Spi);
 
@@ -76,9 +76,9 @@ int main()
 	// _ASSERT(GENERIC_SUCCESS == gobj_spi0.slave_enable(0));
 	// _ASSERT(GENERIC_SUCCESS == gobj_spi0.tx(au8_test, 2, nullptr));
 	// _ASSERT(GENERIC_SUCCESS == gobj_spi0.rx(au8_test, 1, nullptr));
-	DIAGNOSTIC_LOG_STR_UINT("Reg ", ad9361_spi_read(0x037), radix_hexadecimal, true);
+	 DIAGNOSTIC_LOG_STR_UINT("Reg ", ad9361_spi_read(0x037), radix_hexadecimal, true);
 
-	DIAGNOSTIC_LOG_STR_UINT("Reg ", ad9361_spi_read(0x037), radix_hexadecimal, true);
+	 DIAGNOSTIC_LOG_STR_UINT("Reg ", ad9361_spi_read(0x037), radix_hexadecimal, true);
 
 	while(1)
 	{

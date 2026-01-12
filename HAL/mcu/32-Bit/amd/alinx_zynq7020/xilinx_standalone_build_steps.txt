@@ -1,0 +1,6 @@
+##### To build the Xilinx standalone (baremetal) bsp:
+
+1- Put the latest .xsa file in the current directory.
+2- Pass the standalone_bsp_creation.tcl file to Xilinx Softeware Command Tool (xsct). 
+   It is usually stored at <installation directory>/Xilinx/Vitis/2024.2/bin/xsct
+   For example : $ xsct standalone_bsp_creation.tcl

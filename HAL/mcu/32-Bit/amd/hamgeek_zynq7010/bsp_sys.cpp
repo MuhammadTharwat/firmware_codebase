@@ -33,6 +33,7 @@ namespace bsp
     sys::sys(void)
     {
         ps7_init();
+        ps7_post_config();
     }
 
     sys &sys::get_instance(void)

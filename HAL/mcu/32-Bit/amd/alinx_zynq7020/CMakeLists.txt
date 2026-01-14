@@ -6,7 +6,7 @@ message(STATUS "OCRAM Build")
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/lscript_ocram.ld)
 
 						
-include(${CMAKE_CURRENT_SOURCE_DIR}/hamgeek_zynq7010.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/alinx_zynq7020.cmake)
 
 set(ZYNQ700_BSP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_platform/ps7_cortexa9_0/standalone_domain/bsp/ps7_cortexa9_0/libsrc)
 set(ZYNQ7000_FILES 
@@ -37,7 +37,6 @@ set(ZYNQ7000_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/standalone_bsp/zynq_plat
 add_library(${PROJECT_NAME} OBJECT ${ZYNQ7000_FILES} 
                                     ./bsp_led.cpp
                                     ./bsp_uart.cpp
-                                    ./bsp_spi.cpp
                                     ./bsp_io.cpp
                                     ./bsp_sys.cpp
                                     )

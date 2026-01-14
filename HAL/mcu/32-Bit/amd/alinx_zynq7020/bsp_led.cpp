@@ -12,8 +12,10 @@
 #include "xgpiops.h"
 #include "xil_misc_psreset_api.h"
 /******************************************   Macros **********************************************************/
-#define MAX_NUM_LEDs 1
+#define MAX_NUM_LEDs 3
 #define LED_0 UINT32_C(0)
+#define LED_1 UINT32_C(13)
+#define LED_2 UINT32_C(54)
 
 #define GPIO_DEVICE_ID		XPAR_XGPIOPS_0_DEVICE_ID
 
@@ -38,11 +40,6 @@ namespace bsp
     {
         XGpioPs_Config *ConfigPtr;
         /* The driver instance for GPIO Device. */
-        
-        /* Unlock the slcr register access lock */
-        Xil_Out32(XSLCR_UNLOCK_ADDR, XSLCR_UNLOCK_CODE);
-
-        Xil_Out32(XSLCR_MIO_PIN_00_ADDR, 0x00000600);
 
         ConfigPtr = XGpioPs_LookupConfig(GPIO_DEVICE_ID);
 
@@ -75,7 +72,7 @@ namespace bsp
 
     led_dev &get_led_dev(std::uintmax_t uint_dev)
     {
-        static led_dev led_devs[MAX_NUM_LEDs] = {LED_0};
+        static led_dev led_devs[MAX_NUM_LEDs] = {LED_0, LED_1, LED_2};
         return led_devs[uint_dev];
     }
 }

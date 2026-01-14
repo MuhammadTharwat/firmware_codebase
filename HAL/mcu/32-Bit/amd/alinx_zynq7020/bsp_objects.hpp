@@ -15,7 +15,7 @@
 #include <noncopyable.hpp>
 #include "xgpiops.h"
 #include "xuartps.h"
-#include "xspips.h"
+// #include "xspips.h"
 /***********************************************  Defines    **************************************************/
 /***********************************************  Constants   *************************************************/
 /***********************************************  Enumerations   **********************************************/
@@ -57,7 +57,7 @@ namespace bsp
         {
         }
         std::uint32_t u32_base_addr;
-        XSpiPs str_spi;
+        // XSpiPs str_spi;
     };
 
     /*UART Object*/

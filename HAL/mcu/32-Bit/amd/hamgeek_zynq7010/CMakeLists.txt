@@ -20,6 +20,16 @@ set(ZYNQ7000_FILES
                 ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/xplatform_info.c
                 ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/translation_table.S
                 ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/_exit.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/getpid.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/kill.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/isatty.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/sbrk.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/write.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/lseek.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/_sbrk.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/read.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/fstat.c
+                ${ZYNQ700_BSP_DIR}/standalone_v9_0/src/close.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops_g.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops.c
                 ${ZYNQ700_BSP_DIR}/gpiops_v3_12/src/xgpiops_hw.c

@@ -79,6 +79,20 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
+    std::int16_t io::read(tenu_pin_state &renu_state) const
+    {
+
+        if (0 == XGpioPs_ReadPin(&rio_dev.Gpio, rio_dev.u32_idx))
+        {
+            renu_state = pin_state_low;
+        }
+        else
+        {
+            renu_state = pin_state_high;
+        }
+        return GENERIC_SUCCESS;
+    }
+
     io_dev &get_io_dev(std::uintmax_t uint_dev)
     {
         static io_dev io_devs[MAX_NUM_IOs] = {{IO_0}};

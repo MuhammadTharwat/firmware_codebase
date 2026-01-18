@@ -10,6 +10,7 @@
 #include "bsp_sys.hpp"
 #include "general_includes.hpp"
 #include "ps7_init_gpl.h"
+#include "xil_cache.h"
 /******************************************   Macros **********************************************************/
 #define LOG_BAUDRATE            115200u
 
@@ -34,6 +35,8 @@ namespace bsp
     {
         ps7_init();
         ps7_post_config();
+        Xil_ICacheEnable();
+        Xil_DCacheEnable();
     }
 
     sys &sys::get_instance(void)

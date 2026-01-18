@@ -284,6 +284,49 @@ namespace bsp
         return s16_ret;
     }
 
+    std::int16_t spi::tx_rx_ring(const void *pv_tx, void *pv_rx, std::size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
+    {
+        std::int16_t s16_ret = GENERIC_SUCCESS;
+        if (nullptr == pfn_tx_handler)
+        {
+            std::size_t sz_tx_count = 0;
+            while (sz_data_len)
+            {
+                std::int32_t s32_status;
+                std::uint8_t au8_tmp[TEMP_BUFFER_SIZE];
+                std::uint32_t u32_len;
+                uint8_t *pu8_rx = static_cast<uint8_t *>(pv_rx);
+                if (sz_data_len > TEMP_BUFFER_SIZE)
+                {
+                    u32_len = TEMP_BUFFER_SIZE;
+                }
+                else
+                {
+                    u32_len = static_cast<std::uint32_t>(sz_data_len);
+                }
+
+                std::memcpy(au8_tmp, pv_tx, u32_len);
+
+                s32_status = XSpiPs_PolledTransfer(&rspi_dev.str_spi, au8_tmp, &pu8_rx[sz_tx_count], u32_len);
+                if (XST_SUCCESS == s32_status)
+                {
+                    s16_ret = GENERIC_SUCCESS;
+                }
+                else
+                {
+                    break;
+                }
+                sz_data_len -= u32_len;
+                sz_tx_count += u32_len;
+            }
+        }
+        else
+        {
+            /*Asynchronous Tx*/
+        }
+        return s16_ret;
+    }
+
     std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
     {
         std::int16_t s16_ret = GENERIC_SUCCESS;

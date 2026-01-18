@@ -42,6 +42,7 @@ namespace bsp
         std::int16_t slave_disable(std::uint8_t);
         std::int16_t tx(const void *, std::size_t, tpfun_spi_tx_cb);
         std::int16_t rx(void *, std::size_t, tpfun_spi_rx_cb);
+        std::int16_t tx_rx_ring(const void *, void *, std::size_t, tpfun_spi_tx_cb);
         rtos_osal::mutex mtx;
 
     private:

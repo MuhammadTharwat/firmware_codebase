@@ -18,6 +18,9 @@ domain active $domain_name
 
 bsp setlib -name xilffs libmetal openamp
 
+bsp config stdin none
+bsp config stdout none
+
 # For extra compiler flags, use ---> bsp config -append extra_compiler_flags -DTEST
 bsp config -append extra_compiler_flags "-Wl,--gc-sections -ffunction-sections -fdata-sections -Os"
 

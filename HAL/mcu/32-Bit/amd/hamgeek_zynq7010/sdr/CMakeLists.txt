@@ -17,8 +17,10 @@ set(ADI_FILES    ../no-OS/drivers/rf-transceiver/ad9361/ad9361.c
                 ../no-OS/drivers/axi_core/axi_dmac/axi_dmac.c
                 ../no-OS/drivers/api/no_os_gpio.c
                 ../no-OS/drivers/api/no_os_spi.c
+                ../no-OS/drivers/api/no_os_irq.c
                 ../no-OS/drivers/platform/xilinx/xilinx_axi_io.c
                 ../no-OS/drivers/platform/xilinx/xilinx_delay.c
+                ../no-OS/drivers/platform/xilinx/xilinx_irq.c
                 ../no-OS/util/no_os_util.c
                 ../no-OS/util/no_os_mutex.c
                 ../no-OS/util/no_os_alloc.c
@@ -35,6 +37,7 @@ target_include_directories (${EXECUTABLE}	PRIVATE ../no-OS/include
                                                         ../no-OS/drivers/axi_core/axi_adc_core
                                                         ../no-OS/drivers/axi_core/axi_dac_core
                                                         ../no-OS/drivers/axi_core/axi_dmac
+                                                        ../no-OS/drivers/platform/xilinx
                                                         ../
                                                         ./)
 

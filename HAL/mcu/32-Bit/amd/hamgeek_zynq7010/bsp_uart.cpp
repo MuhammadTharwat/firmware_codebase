@@ -224,9 +224,9 @@ namespace bsp
 
     std::int16_t uart::tx(const void *pv_data, std::size_t sz_data_len, tpfn_uart_tx_handler pfn_tx_handler) const
     {
-        std::int16_t s16_ret = GENERIC_ERR_HW;
         if (nullptr == pfn_tx_handler)
         {
+            const std::uint8_t *pu8_data = reinterpret_cast<const std::uint8_t *>(pv_data);
             while (sz_data_len)
             {
                 std::uint8_t au8_tmp[TEMP_BUFFER_SIZE];
@@ -240,25 +240,18 @@ namespace bsp
                     sz_len = sz_data_len;
                 }
 
-                std::memcpy(au8_tmp, pv_data, sz_len);
+                std::memcpy(au8_tmp, pu8_data, sz_len);
 
                 std::uint32_t u32_tx = XUartPs_Send(&ruart_dev.str_uart, au8_tmp, static_cast<std::uint32_t>(sz_len));
-                if (u32_tx == static_cast<std::uint32_t>(sz_data_len))
-                {
-                    s16_ret = GENERIC_SUCCESS;
-                }
-                else
-                {
-                    break;
-                }
-                sz_data_len -= sz_len;
+                sz_data_len -= static_cast<std::size_t>(u32_tx);
+                pu8_data += u32_tx;
             }
         }
         else
         {
             /*Asynchronous Tx*/
         }
-        return s16_ret;
+        return GENERIC_SUCCESS;
     }
 
     std::int16_t uart::rx(void *pv_data, std::size_t sz_data_len, tpfn_uart_rx_handler pfn_rx_handler, std::uint32_t u32_timeout_ms) const

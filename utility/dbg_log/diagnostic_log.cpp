@@ -136,6 +136,7 @@ static void s64_to_str(char *pchr_buff, int64_t s64_val, bool b_new_line)
 {
 	uint8_t u8_idx = 0;
 	bool b_is_minus = false;
+	pchr_buff[u8_idx++] = '\0';
 	if (true == b_new_line)
 	{
 		pchr_buff[u8_idx] = '\n';
@@ -150,7 +151,6 @@ static void s64_to_str(char *pchr_buff, int64_t s64_val, bool b_new_line)
 	{
 		b_is_minus = true;
 		s64_val *= -1;
-		u8_idx++;
 	}
 	else
 	{

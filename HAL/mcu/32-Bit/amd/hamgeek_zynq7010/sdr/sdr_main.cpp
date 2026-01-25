@@ -3,6 +3,7 @@
 #include "bsp_uart.hpp"
 #include "bsp_spi.hpp"
 #include "bsp_io.hpp"
+#include <sleep.h>
 #include "diagnostic_log.hpp"
 #include "general_includes.hpp"
 #ifndef __STDC_VERSION__
@@ -16,8 +17,12 @@ extern "C"
 #include "axi_dmac.h"
 #include "axi_adc_core.h"
 #include "axi_dac_core.h"
+#include "no_os_irq.h"
+#include "xilinx_irq.h"
+#include "xil_cache.h"
 }
 #include "parameters.h"
+
 
 #define MAX_GPIO_DESC 6
 
@@ -30,6 +35,8 @@ static bsp::uart gobj_uart0{bsp::get_uart_dev(0)};
 diagnostic_logger gobj_diagnostic_logger(gobj_uart0);
 static bsp::spi gobj_spi0{bsp::get_spi_dev(0)};
 
+static int16_t gas16_adc_buffer[ADC_BUFFER_SAMPLES * ADC_CHANNELS] __attribute__((
+			aligned(1024)));
 
 int32_t spi_init(struct no_os_spi_desc **desc, const struct no_os_spi_init_param *param)
 {
@@ -226,40 +233,33 @@ const struct no_os_spi_platform_ops spi_ops = {
 	.remove = &spi_remove
 };
 
+struct axi_adc_init rx_adc_init = {
+	.name = "cf-ad9361-lpc",
+	.base = RX_CORE_BASEADDR,
 
-static struct axi_adc_init rx_adc_init = {
-	"cf-ad9361-lpc",
-	RX_CORE_BASEADDR,
-	4,
+	.num_channels = ADC_CHANNELS,
+	.num_slave_channels = 0};
+
+static struct axi_dmac_init rx_dmac_init = {
+	"rx_dmac",
+	CF_AD9361_RX_DMA_BASEADDR,
+	IRQ_ENABLED
 };
+
+static struct axi_dmac *rx_dmac;
 
 static struct axi_dac_init tx_dac_init = {
 	"cf-ad9361-dds-core-lpc",
 	TX_CORE_BASEADDR,
 	4,
-	NULL
+	NULL,
+	3
 };
-
-// static struct axi_dmac_init rx_dmac_init = {
-// 	"rx_dmac",
-// 	CF_AD9361_RX_DMA_BASEADDR,
-// #ifdef ADC_DMA_IRQ_EXAMPLE
-// 	IRQ_ENABLED
-// #else
-// 	IRQ_DISABLED
-// #endif
-// };
-
-// static struct axi_dmac *rx_dmac;
 
 // static struct axi_dmac_init tx_dmac_init = {
 // 	"tx_dmac",
 // 	CF_AD9361_TX_DMA_BASEADDR,
-// #ifdef ADC_DMA_IRQ_EXAMPLE
 // 	IRQ_ENABLED
-// #else
-// 	IRQ_DISABLED
-// #endif
 // };
 
 // static struct axi_dmac *tx_dmac;
@@ -270,7 +270,7 @@ static AD9361_InitParam default_init_param = {
 	/* Reference Clock */
 	40000000UL,	//reference_clk_rate
 	/* Base Configuration */
-	1,		//two_rx_two_tx_mode_enable *** adi,2rx-2tx-mode-enable
+	0,		//two_rx_two_tx_mode_enable *** adi,2rx-2tx-mode-enable
 	1,		//one_rx_one_tx_mode_use_rx_num *** adi,1rx-1tx-mode-use-rx-num
 	1,		//one_rx_one_tx_mode_use_tx_num *** adi,1rx-1tx-mode-use-tx-num
 	1,		//frequency_division_duplex_mode_enable *** adi,frequency-division-duplex-mode-enable
@@ -451,11 +451,7 @@ static AD9361_InitParam default_init_param = {
 	4,		//rx_data_delay *** adi,rx-data-delay
 	7,		//tx_fb_clock_delay *** adi,tx-fb-clock-delay
 	0,		//tx_data_delay *** adi,tx-data-delay
-#ifdef ALTERA_PLATFORM
-	300,	//lvds_bias_mV *** adi,lvds-bias-mV
-#else
 	150,	//lvds_bias_mV *** adi,lvds-bias-mV
-#endif
 	1,		//lvds_rx_onchip_termination_enable *** adi,lvds-rx-onchip-termination-enable
 	0,		//rx1rx2_phase_inversion_en *** adi,rx1-rx2-phase-inversion-enable
 	0xFF,	//lvds_invert1_control *** adi,lvds-invert1-control
@@ -536,10 +532,38 @@ static AD9361_InitParam default_init_param = {
 	&tx_dac_init,   // *tx_dac_init
 };
 
+AD9361_RXFIRConfig rx_fir_config = {
+	// BPF PASSBAND 3/20 fs to 1/4 fs
+	3, // rx
+	0, // rx_gain
+	1, // rx_dec
+	{
+		-4, -6, -37, 35, 186, 86, -284, -315,
+		107, 219, -4, 271, 558, -307, -1182, -356,
+		658, 157, 207, 1648, 790, -2525, -2553, 748,
+		865, -476, 3737, 6560, -3583, -14731, -5278, 14819,
+		14819, -5278, -14731, -3583, 6560, 3737, -476, 865,
+		748, -2553, -2525, 790, 1648, 207, 157, 658,
+		-356, -1182, -307, 558, 271, -4, 219, 107,
+		-315, -284, 86, 186, 35, -37, -6, -4,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0}, // rx_coef[128]
+	64,							 // rx_coef_size
+	{0, 0, 0, 0, 0, 0},			 // rx_path_clks[6]
+	0							 // rx_bandwidth
+};
+
 static struct ad9361_rf_phy *ad9361_phy;
 
 int main()
 {
+	int32_t s32_status;
 	const bsp::tstr_uart_init str_uart_init =
 		{
 			bsp::uart_parity_none,
@@ -559,13 +583,90 @@ int main()
 		DIAGNOSTIC_LOG_STR("AD9361 Err", true);
 	}
 
-	while(1)
+	_ASSERT(0 == ad9361_bist_tone(ad9361_phy, BIST_INJ_RX, 937500 * 2, 6, 0));
+
+	//_ASSERT(0 == ad9361_set_en_state_machine_mode(ad9361_phy, ENSM_MODE_SLEEP));
+
+	_ASSERT(0 == ad9361_set_rx_fir_config(ad9361_phy, rx_fir_config));
+
+	s32_status = axi_dmac_init(&rx_dmac, &rx_dmac_init);
+	if (s32_status < 0)
 	{
-		DIAGNOSTIC_LOG_STR("Ticking . . ", true);
+		DIAGNOSTIC_LOG_STR_SINT("RX DMA Err ", s32_status, true);
+		return s32_status;
+	}
+
+	/**
+	 * Xilinx platform dependent initialization for IRQ.
+	 */
+	struct xil_irq_init_param xil_irq_init_par = {
+		.type = IRQ_PS,
+	};
+
+	/**
+	 * IRQ initial configuration.
+	 */
+	struct no_os_irq_init_param irq_init_param = {
+		.irq_ctrl_id = INTC_DEVICE_ID,
+		.platform_ops = &xil_irq_ops,
+		.extra = &xil_irq_init_par,
+	};
+
+	/**
+	 * IRQ instance.
+	 */
+	struct no_os_irq_ctrl_desc *irq_desc;
+
+	_ASSERT(0 == no_os_irq_ctrl_init(&irq_desc, &irq_init_param));
+
+	_ASSERT(0 == no_os_irq_global_enable(irq_desc));
+
+	struct no_os_callback_desc rx_dmac_callback = {
+		.callback = axi_dmac_dev_to_mem_isr,
+		.ctx = rx_dmac,
+	};
+
+	_ASSERT(0 == no_os_irq_register_callback(irq_desc,
+					     AD9361_ADC_DMA_IRQ_INTR, &rx_dmac_callback));
+
+	_ASSERT(0 == no_os_irq_trigger_level_set(irq_desc,
+					     AD9361_ADC_DMA_IRQ_INTR, NO_OS_IRQ_LEVEL_HIGH));
+
+	_ASSERT(0 == no_os_irq_enable(irq_desc, AD9361_ADC_DMA_IRQ_INTR));
+
+	struct axi_dma_transfer read_transfer = {
+		// Number of bytes to write/read
+		.size = sizeof(gas16_adc_buffer),
+		// Transfer done flag
+		.transfer_done = 0,
+		// Signal transfer mode
+		.cyclic = NO,
+		// Address of data source
+		.src_addr = 0,
+		// Address of data destination
+		.dest_addr = (uintptr_t)gas16_adc_buffer};
+
+	/* Read the data from the ADC DMA. */
+	_ASSERT(0 == axi_dmac_transfer_start(rx_dmac, &read_transfer));
+	
+	DIAGNOSTIC_LOG_STR("Waiting Cplt . . ", true);
+
+	/* Wait until transfer finishes */
+	_ASSERT(0 == axi_dmac_transfer_wait_completion(rx_dmac, 500));
+	
+	_ASSERT(0 == ad9361_set_en_state_machine_mode(ad9361_phy, ENSM_MODE_SLEEP));
+	Xil_DCacheInvalidateRange((uintptr_t)gas16_adc_buffer, sizeof(gas16_adc_buffer));
+	
+	for(uint32_t idx = 0; idx < ADC_BUFFER_SAMPLES * ADC_CHANNELS; idx +=2)
+	{
+		DIAGNOSTIC_LOG_STR_SINT("",gas16_adc_buffer[idx], true);
+	}
+	while(true)
+	{
 		gobj_led_0.on();
-		for(volatile uint32_t i=0 ; i< 20000000; i++);
+		usleep(100 * 1000);
 		gobj_led_0.off();
-		for(volatile uint32_t i=0 ; i< 20000000; i++);
+		usleep(100 * 1000);
 	}
 	return 0;
 }

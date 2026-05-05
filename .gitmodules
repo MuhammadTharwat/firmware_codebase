@@ -1,3 +1,6 @@
 [submodule "HAL/mcu/32-Bit/amd/hamgeek_zynq7010/no-OS"]
 	path = HAL/mcu/32-Bit/amd/hamgeek_zynq7010/no-OS
 	url = https://github.com/analogdevicesinc/no-OS.git
+[submodule "HAL/mcu/32-Bit/ti/c2000ware-core-sdk"]
+	path = HAL/mcu/32-Bit/ti/c2000ware-core-sdk
+	url = https://github.com/TexasInstruments/c2000ware-core-sdk.git

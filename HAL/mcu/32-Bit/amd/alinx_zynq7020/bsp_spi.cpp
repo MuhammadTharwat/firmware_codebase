@@ -44,13 +44,13 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t spi::init(std::uint16_t u16_spi_clk_divider, tenu_spi_mode enu_spi_mode, bool b_msb_first)
+    int16_t spi::init(uint16_t u16_spi_clk_divider, tenu_spi_mode enu_spi_mode, bool b_msb_first)
     {
         (void)(b_msb_first);
-        std::uint8_t u8_prescaler;
-        std::int16_t s16_ret = GENERIC_SUCCESS;
-        std::int32_t s32_status;
-        std::uint32_t u32_options = XSPIPS_MASTER_OPTION;
+        uint8_t u8_prescaler;
+        int16_t s16_ret = GENERIC_SUCCESS;
+        int32_t s32_status;
+        uint32_t u32_options = XSPIPS_MASTER_OPTION;
         XSpiPs_Config *pstr_config;
 
         pstr_config = XSpiPs_LookupConfig(rspi_dev.u32_base_addr);
@@ -224,9 +224,9 @@ namespace bsp
         return s16_ret;
     }
 
-    std::int16_t spi::slave_enable(std::uint8_t u8_slave)
+    int16_t spi::slave_enable(uint8_t u8_slave)
     {
-        std::int16_t s16_ret = GENERIC_SUCCESS;
+        int16_t s16_ret = GENERIC_SUCCESS;
         if (XST_SUCCESS != XSpiPs_SetSlaveSelect(&rspi_dev.str_spi, u8_slave))
         {
             s16_ret = GENERIC_ERR_HW;
@@ -238,29 +238,29 @@ namespace bsp
         return s16_ret;
     }
 
-    std::int16_t spi::slave_disable(std::uint8_t u8_slave)
+    int16_t spi::slave_disable(uint8_t u8_slave)
     {
         (void)(u8_slave);
         return GENERIC_ERR_HW;
     }
 
-    std::int16_t spi::tx(const void *pv_data, std::size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
+    int16_t spi::tx(const void *pv_data, size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
     {
-        std::int16_t s16_ret = GENERIC_SUCCESS;
+        int16_t s16_ret = GENERIC_SUCCESS;
         if (nullptr == pfn_tx_handler)
         {
                 while (sz_data_len)
                 {
-                    std::int32_t s32_status;
-                    std::uint8_t au8_tmp[TEMP_BUFFER_SIZE];
-                    std::uint32_t u32_len;
+                    int32_t s32_status;
+                    uint8_t au8_tmp[TEMP_BUFFER_SIZE];
+                    uint32_t u32_len;
                     if (sz_data_len > TEMP_BUFFER_SIZE)
                     {
                         u32_len = TEMP_BUFFER_SIZE;
                     }
                     else
                     {
-                        u32_len = static_cast<std::uint32_t>(sz_data_len);
+                        u32_len = static_cast<uint32_t>(sz_data_len);
                     }
 
                     std::memcpy(au8_tmp, pv_data, u32_len);
@@ -284,27 +284,27 @@ namespace bsp
         return s16_ret;
     }
 
-    std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
+    int16_t spi::rx(void *pv_data, size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
     {
-        std::int16_t s16_ret = GENERIC_SUCCESS;
+        int16_t s16_ret = GENERIC_SUCCESS;
         if (nullptr == pfn_rx_handler)
         {
             while (sz_data_len)
             {
-                std::int32_t s32_status;
-                std::uint32_t u32_len;
+                int32_t s32_status;
+                uint32_t u32_len;
                 if (sz_data_len > TEMP_BUFFER_SIZE)
                 {
                     u32_len = TEMP_BUFFER_SIZE;
                 }
                 else
                 {
-                    u32_len = static_cast<std::uint32_t>(sz_data_len);
+                    u32_len = static_cast<uint32_t>(sz_data_len);
                 }
 
                 std::memset(pv_data, 0x00, u32_len);
 
-                s32_status = XSpiPs_PolledTransfer(&rspi_dev.str_spi, reinterpret_cast<std::uint8_t *>(pv_data), reinterpret_cast<std::uint8_t *>(pv_data), u32_len);
+                s32_status = XSpiPs_PolledTransfer(&rspi_dev.str_spi, reinterpret_cast<uint8_t *>(pv_data), reinterpret_cast<uint8_t *>(pv_data), u32_len);
                 if (XST_SUCCESS == s32_status)
                 {
                     s16_ret = GENERIC_SUCCESS;
@@ -323,7 +323,7 @@ namespace bsp
         return s16_ret;
     }
 
-        spi_dev &get_spi_dev(std::uintmax_t uint_dev)
+        spi_dev &get_spi_dev(uintmax_t uint_dev)
         {
             static spi_dev spi_devs[MAX_NUM_SPIs] = {{SPI_DEVICE_ID}};
             return spi_devs[uint_dev];

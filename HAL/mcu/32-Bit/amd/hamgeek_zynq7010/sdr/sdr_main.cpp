@@ -65,7 +65,7 @@ int32_t gpio_get(struct no_os_gpio_desc **desc,
 					 const struct no_os_gpio_init_param *param)
 {
 	static no_os_gpio_desc astr_gpio_desc[MAX_GPIO_DESC];
-	static std::uint8_t u8_desc_idx = 0;
+	static uint8_t u8_desc_idx = 0;
 
 	astr_gpio_desc[u8_desc_idx].number = param->number;
 

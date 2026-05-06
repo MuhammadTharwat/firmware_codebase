@@ -27,10 +27,10 @@ namespace bsp
     {
     public:
         ~led_dev() = default;
-        led_dev(std::uintmax_t uint_idx) : u32_idx(uint_idx)
+        led_dev(uintmax_t uint_idx) : u32_idx(uint_idx)
         {
         }
-        std::uint32_t u32_idx;
+        uint32_t u32_idx;
     };
 
     /*IO Object*/
@@ -38,10 +38,10 @@ namespace bsp
     {
     public:
         ~io_dev() = default;
-        io_dev(std::uintmax_t uint_idx) : u32_idx(uint_idx)
+        io_dev(uintmax_t uint_idx) : u32_idx(uint_idx)
         {
         }
-        std::uint32_t u32_idx;
+        uint32_t u32_idx;
     };
 
     /*SPI Object*/
@@ -49,10 +49,10 @@ namespace bsp
     {
     public:
         ~spi_dev() = default;
-        spi_dev(std::uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
+        spi_dev(uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
         {
         }
-        std::uint32_t u32_base_addr;
+        uint32_t u32_base_addr;
     };
 
     /*UART Object*/
@@ -60,10 +60,10 @@ namespace bsp
     {
     public:
         ~uart_dev() = default;
-        uart_dev(std::uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
+        uart_dev(uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
         {
         }
-        std::uint32_t u32_base_addr;
+        uint32_t u32_base_addr;
     };
 }
 

@@ -9,7 +9,11 @@
 */
 #ifndef BSP_SPI_H_
 #define BSP_SPI_H_
+#ifndef __TI_COMPILER_VERSION__
 #include <cstdint>
+#else
+#include <stdint.h>
+#endif
 #include <stddef.h>
 #include <noncopyable.hpp>
 #include <mutex.hpp>
@@ -27,33 +31,38 @@ namespace bsp
         spi_mode_pol_low_ph_1st_edge,
         spi_mode_pol_low_ph_2nd_edge
     };
-    
+
+#ifndef __TI_COMPILER_VERSION__
     using tpfun_spi_tx_cb = void (*)(void);
     using tpfun_spi_rx_cb = void (*)(const void *pv_rx_data, size_t sz_len);
+#else
+    typedef void (*tpfun_spi_tx_cb)(void);
+    typedef void (*tpfun_spi_rx_cb)(const void *pv_rx_data, size_t sz_len);
+#endif
 
     class spi : private noncopyable
     {
     public:
         spi(spi_dev &);
         ~spi(void) = default;
-        std::int16_t init(std::uint16_t, tenu_spi_mode, bool);
-        std::int16_t deinit(void) const;
-        std::int16_t slave_enable(std::uint8_t);
-        std::int16_t slave_disable(std::uint8_t);
-        std::int16_t tx(const void *, std::size_t, tpfun_spi_tx_cb);
-        std::int16_t rx(void *, std::size_t, tpfun_spi_rx_cb);
-        std::int16_t tx_rx_ring(const void *, void *, std::size_t, tpfun_spi_tx_cb);
+        int16_t init(uint16_t, tenu_spi_mode, bool);
+        int16_t deinit(void) const;
+        int16_t slave_enable(uint8_t);
+        int16_t slave_disable(uint8_t);
+        int16_t tx(const void *, size_t, tpfun_spi_tx_cb);
+        int16_t rx(void *, size_t, tpfun_spi_rx_cb);
+        int16_t tx_rx_ring(const void *, void *, size_t, tpfun_spi_tx_cb);
         rtos_osal::mutex mtx;
 
     private:
-        std::uint16_t u16_spi_clk_divisor;
+        uint16_t u16_spi_clk_divisor;
         tenu_spi_mode enu_spi_mode;
         tpfun_spi_tx_cb pfun_tx_cb;
         tpfun_spi_rx_cb pfun_rx_cb;
         spi_dev &rspi_dev;
     };
 
-    spi_dev &get_spi_dev(std::uintmax_t);
+    spi_dev &get_spi_dev(uintmax_t);
 }
 
 #endif /*BSP_SPI_H_*/

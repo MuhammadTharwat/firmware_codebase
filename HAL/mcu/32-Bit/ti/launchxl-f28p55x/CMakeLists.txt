@@ -52,15 +52,17 @@ set(TI_SDK_FILES
                 ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_pievect.c
                 ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_sysctrl.c
                 ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_tempsensorconv.c
+                ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_codestartbranch.asm
 				)
 
 set(TI_SDK_INCLUDE_DIR  ../c2000ware-core-sdk/driverlib/f28p55x/driverlib
                         ../c2000ware-core-sdk/driverlib/f28p55x/driverlib/inc
                         ../c2000ware-core-sdk/device_support/f28p55x/headers/include
+                        ../c2000ware-core-sdk/device_support/f28p55x/common/include
                     )
 
 
-set_source_files_properties(${TI_SDK_FILES} PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter -Wno-maybe-uninitialized")
+set_source_files_properties(${TI_SDK_FILES} PROPERTIES COMPILE_FLAGS "--diag_suppress=179,552")
 
 add_library(${PROJECT_NAME} STATIC ${TI_SDK_FILES} 
                                     ./bsp_led.cpp
@@ -70,6 +72,7 @@ add_library(${PROJECT_NAME} STATIC ${TI_SDK_FILES}
                                     ./bsp_sys.cpp
                                     )
 
+
 target_include_directories (${PROJECT_NAME} PRIVATE ${TI_SDK_INCLUDE_DIR}
                                                     )
 
@@ -78,6 +81,9 @@ target_include_directories (${PROJECT_NAME}  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../common
                                                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utility/dbg_log)
 
+
+target_link_libraries(${PROJECT_NAME}  PRIVATE	$ENV{CG_TOOL_ROOT}/lib/rts2800_fpu32_eabi.lib
+                                                )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE  )
 

@@ -8,6 +8,9 @@
  ******************************************************************************
  */
 #include "timer.hpp"
+#ifdef __TI_COMPILER_VERSION__
+#include <cstddef>
+#endif
 /***********************************************  Defines    **************************************************/
 
 /***********************************************  Constants   *************************************************/
@@ -17,7 +20,7 @@
 /*********************************************** Data types  **************************************************/
 namespace rtos_osal
 {
-  timer::timer(const char* pch_name, std::uint32_t u32_period_ms, bool b_auto_reload, void* pv_timer_id, tpfn_timer_cb pfn_timer_cb)
+  timer::timer(const char* pch_name, uint32_t u32_period_ms, bool b_auto_reload, void* pv_timer_id, tpfn_timer_cb pfn_timer_cb)
   {
     (void)pch_name;
     (void)u32_period_ms;
@@ -26,7 +29,7 @@ namespace rtos_osal
     (void)pfn_timer_cb;
   }
 
-  tenu_osal_status timer::start(std::uint32_t u32_period_ms)
+  tenu_osal_status timer::start(uint32_t u32_period_ms)
   {
     (void)u32_period_ms;
     return osal_success;
@@ -38,7 +41,7 @@ namespace rtos_osal
     return osal_success;
   }
 
-  tenu_osal_status timer::change_period(std::uint32_t u32_period_ms)
+  tenu_osal_status timer::change_period(uint32_t u32_period_ms)
   { 
     (void)u32_period_ms;
     return osal_success;
@@ -60,7 +63,7 @@ namespace rtos_osal
     return pv_timer_id;
   }
 
-  std::uint32_t timer::get_hdl(void)
+  uint32_t timer::get_hdl(void)
   {
     return 0;
   }

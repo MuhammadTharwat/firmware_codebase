@@ -19,18 +19,18 @@
 #define M25P64_ERR_WRONG_SIGNATURE INT16_C(M25P64_ERROR_BASE - 1)
 #define M25P64_ERR_WRONG_ID INT16_C(M25P64_ERROR_BASE - 2)
 /***********************************************  Constants   *************************************************/
-static constexpr std::uint32_t gu32_mtx_timeout_ms = UINT32_C(1000);
-static constexpr std::uint16_t gu16_spi_speed_factor = UINT16_C(M25P64_SPI_SPEED_FACTOR);
-static constexpr std::size_t gsz_total_size = 0x800000; /*8 MBytes*/
+static constexpr uint32_t gu32_mtx_timeout_ms = UINT32_C(1000);
+static constexpr uint16_t gu16_spi_speed_factor = UINT16_C(M25P64_SPI_SPEED_FACTOR);
+static constexpr size_t gsz_total_size = 0x800000; /*8 MBytes*/
 
 /*Instructions*/
-static constexpr std::uint8_t gu8_read_identification = UINT8_C(0x9F);
-static constexpr std::uint8_t gu8_read_data_bytes = UINT8_C(0x03);
-static constexpr std::uint8_t gu8_read_signature = UINT8_C(0xAB);
+static constexpr uint8_t gu8_read_identification = UINT8_C(0x9F);
+static constexpr uint8_t gu8_read_data_bytes = UINT8_C(0x03);
+static constexpr uint8_t gu8_read_signature = UINT8_C(0xAB);
 
 /*Responses*/
-static constexpr std::uint8_t gu8_signature_value = UINT8_C(0x16);
-static constexpr std::uint8_t gau8_rdid_response[3] = {0x20, 0x20, 0x17};
+static constexpr uint8_t gu8_signature_value = UINT8_C(0x16);
+static constexpr uint8_t gau8_rdid_response[3] = {0x20, 0x20, 0x17};
 /************************************************** Global Variables **************************************************/
 
 /************************************************** APIs **************************************************/
@@ -42,7 +42,7 @@ m25p64::m25p64(bsp::spi &rspi_init, bsp::output &routput_init) : rspi(rspi_init)
     rcs.write(bsp::pin_state_high);
 }
 
-std::int16_t m25p64::program_page(std::uint32_t u32_addr, const void *pv_data, std::uint8_t u8_len)
+int16_t m25p64::program_page(uint32_t u32_addr, const void *pv_data, uint8_t u8_len)
 {
     (void)(u32_addr);
     (void)(pv_data);
@@ -50,10 +50,10 @@ std::int16_t m25p64::program_page(std::uint32_t u32_addr, const void *pv_data, s
     return GENERIC_SUCCESS;
 }
 
-std::int16_t m25p64::verify_identification(void)
+int16_t m25p64::verify_identification(void)
 {
-    std::int16_t s16_ret;
-    std::uint8_t au8_bytes[4u];
+    int16_t s16_ret;
+    uint8_t au8_bytes[4u];
 
     s16_ret = (rtos_osal::osal_success == rspi.mtx.lock(gu32_mtx_timeout_ms)) ? GENERIC_SUCCESS : OSAL_ERR_BASE;
 
@@ -100,10 +100,10 @@ std::int16_t m25p64::verify_identification(void)
     return s16_ret;
 }
 
-std::int16_t m25p64::verify_electonic_signature(void)
+int16_t m25p64::verify_electonic_signature(void)
 {
-    std::int16_t s16_ret;
-    std::uint8_t au8_bytes[4u];
+    int16_t s16_ret;
+    uint8_t au8_bytes[4u];
 
     s16_ret = (rtos_osal::osal_success == rspi.mtx.lock(gu32_mtx_timeout_ms)) ? GENERIC_SUCCESS : OSAL_ERR_BASE;
 
@@ -150,10 +150,10 @@ std::int16_t m25p64::verify_electonic_signature(void)
     return s16_ret;
 }
 
-std::int16_t m25p64::read(std::uint32_t u32_addr, void *pv_data, std::size_t sz_len)
+int16_t m25p64::read(uint32_t u32_addr, void *pv_data, size_t sz_len)
 {
-    std::int16_t s16_ret = MEM_ERR_ADDR_OUT_OF_RANGE;
-    std::size_t sz_end_addr = static_cast<std::size_t>(u32_addr) + sz_len;
+    int16_t s16_ret = MEM_ERR_ADDR_OUT_OF_RANGE;
+    size_t sz_end_addr = static_cast<size_t>(u32_addr) + sz_len;
     if ((sz_end_addr > gsz_total_size) || (nullptr == pv_data))
     {
         /*Do nothing*/
@@ -174,11 +174,11 @@ std::int16_t m25p64::read(std::uint32_t u32_addr, void *pv_data, std::size_t sz_
 
     if (GENERIC_SUCCESS == s16_ret)
     {
-        std::uint8_t au8_bytes[4u];
+        uint8_t au8_bytes[4u];
         au8_bytes[0] = gu8_read_data_bytes;
-        au8_bytes[1] = static_cast<std::uint8_t>((u32_addr >> 16) & 0xFF);
-        au8_bytes[2] = static_cast<std::uint8_t>((u32_addr >> 8) & 0xFF);
-        au8_bytes[3] = static_cast<std::uint8_t>(u32_addr & 0xFF);
+        au8_bytes[1] = static_cast<uint8_t>((u32_addr >> 16) & 0xFF);
+        au8_bytes[2] = static_cast<uint8_t>((u32_addr >> 8) & 0xFF);
+        au8_bytes[3] = static_cast<uint8_t>(u32_addr & 0xFF);
 
         rcs.write(bsp::pin_state_low);
         s16_ret = rspi.tx(au8_bytes, sizeof(au8_bytes), nullptr);

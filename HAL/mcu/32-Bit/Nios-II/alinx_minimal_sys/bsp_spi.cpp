@@ -58,10 +58,10 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t spi::init(std::uint16_t u16_spi_clk_divider, tenu_spi_mode enu_spi_mode, bool b_msb_first)
+    int16_t spi::init(uint16_t u16_spi_clk_divider, tenu_spi_mode enu_spi_mode, bool b_msb_first)
     {
-        std::int16_t s16_ret = GENERIC_SUCCESS;
-        std::uint32_t u32_reg = 0u;
+        int16_t s16_ret = GENERIC_SUCCESS;
+        uint32_t u32_reg = 0u;
 
         u32_reg |= SPI_CLK_DIVISOR_MASK & u16_spi_clk_divider;
 
@@ -111,21 +111,21 @@ namespace bsp
         return s16_ret;
     }
 
-    std::int16_t spi::tx(const void *pv_data, std::size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
+    int16_t spi::tx(const void *pv_data, size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
     {
         if (nullptr == pfn_tx_handler)
         {
-            const std::uint8_t *pu8_bytes = static_cast<const std::uint8_t *>(pv_data);
+            const uint8_t *pu8_bytes = static_cast<const uint8_t *>(pv_data);
             /*Synchronous, blocking Tx*/
-            for (std::size_t sz_idx = 0; sz_idx < sz_data_len; sz_idx++)
+            for (size_t sz_idx = 0; sz_idx < sz_data_len; sz_idx++)
             {
-                std::uint32_t u32_data;
+                uint32_t u32_data;
                 /*Block on TX ready*/
                 while (!(IORD_STATUS_REG(this->rspi_dev.u32_base_addr) & SPI_TX_READY_MASK))
                 {
                     /*Do nothing*/
                 }
-                u32_data = static_cast<std::uint32_t>(pu8_bytes[sz_idx]);
+                u32_data = static_cast<uint32_t>(pu8_bytes[sz_idx]);
                 IOWR_TXR_REG(this->rspi_dev.u32_base_addr, u32_data);
             }
         }
@@ -136,15 +136,15 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
+    int16_t spi::rx(void *pv_data, size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
     {
         if (nullptr == pfn_rx_handler)
         {
-            std::uint8_t *pu8_bytes = static_cast<std::uint8_t *>(pv_data);
+            uint8_t *pu8_bytes = static_cast<uint8_t *>(pv_data);
             /*Synchronous, blocking Tx*/
-            for (std::size_t sz_idx = 0; sz_idx < sz_data_len; sz_idx++)
+            for (size_t sz_idx = 0; sz_idx < sz_data_len; sz_idx++)
             {
-                std::uint32_t u32_data = 0;
+                uint32_t u32_data = 0;
                 /*Block on TX ready*/
                 while (!(IORD_STATUS_REG(this->rspi_dev.u32_base_addr) & SPI_TX_READY_MASK))
                 {
@@ -158,7 +158,7 @@ namespace bsp
                     /*Do nothing*/
                 }
                 u32_data = IORD_RXR_REG(this->rspi_dev.u32_base_addr);
-                pu8_bytes[sz_idx] = static_cast<std::uint8_t>(u32_data);
+                pu8_bytes[sz_idx] = static_cast<uint8_t>(u32_data);
             }
         }
         else
@@ -168,7 +168,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    spi_dev &get_spi_dev(std::uintmax_t uint_dev)
+    spi_dev &get_spi_dev(uintmax_t uint_dev)
     {
         static spi_dev spi_devs[MAX_NUM_SPI] = {{SPI0_BASE}};
         return spi_devs[uint_dev];

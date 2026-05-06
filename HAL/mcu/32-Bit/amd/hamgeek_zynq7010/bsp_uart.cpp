@@ -44,10 +44,10 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t uart::init(const tstr_uart_init &rstr_uart_init) const
+    int16_t uart::init(const tstr_uart_init &rstr_uart_init) const
     {
-        std::int16_t s16_ret = GENERIC_SUCCESS;
-        std::int32_t s32_status;
+        int16_t s16_ret = GENERIC_SUCCESS;
+        int32_t s32_status;
         XUartPs_Config *pstr_config;
         XUartPsFormat str_formate;
         str_formate.DataBits = XUARTPS_FORMAT_8_BITS;
@@ -216,21 +216,21 @@ namespace bsp
     {
     }
 
-    std::int16_t uart::change_br(tenu_uart_baud_rate enu_br) const
+    int16_t uart::change_br(tenu_uart_baud_rate enu_br) const
     {
         (void)(enu_br);
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t uart::tx(const void *pv_data, std::size_t sz_data_len, tpfn_uart_tx_handler pfn_tx_handler) const
+    int16_t uart::tx(const void *pv_data, size_t sz_data_len, tpfn_uart_tx_handler pfn_tx_handler) const
     {
         if (nullptr == pfn_tx_handler)
         {
-            const std::uint8_t *pu8_data = reinterpret_cast<const std::uint8_t *>(pv_data);
+            const uint8_t *pu8_data = reinterpret_cast<const uint8_t *>(pv_data);
             while (sz_data_len)
             {
-                std::uint8_t au8_tmp[TEMP_BUFFER_SIZE];
-                std::size_t sz_len;
+                uint8_t au8_tmp[TEMP_BUFFER_SIZE];
+                size_t sz_len;
                 if (sz_data_len > TEMP_BUFFER_SIZE)
                 {
                     sz_len = TEMP_BUFFER_SIZE;
@@ -242,8 +242,8 @@ namespace bsp
 
                 std::memcpy(au8_tmp, pu8_data, sz_len);
 
-                std::uint32_t u32_tx = XUartPs_Send(&ruart_dev.str_uart, au8_tmp, static_cast<std::uint32_t>(sz_len));
-                sz_data_len -= static_cast<std::size_t>(u32_tx);
+                uint32_t u32_tx = XUartPs_Send(&ruart_dev.str_uart, au8_tmp, static_cast<uint32_t>(sz_len));
+                sz_data_len -= static_cast<size_t>(u32_tx);
                 pu8_data += u32_tx;
             }
         }
@@ -254,7 +254,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t uart::rx(void *pv_data, std::size_t sz_data_len, tpfn_uart_rx_handler pfn_rx_handler, std::uint32_t u32_timeout_ms) const
+    int16_t uart::rx(void *pv_data, size_t sz_data_len, tpfn_uart_rx_handler pfn_rx_handler, uint32_t u32_timeout_ms) const
     {
         (void)(pv_data);
         (void)(sz_data_len);
@@ -263,7 +263,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    uart_dev &get_uart_dev(std::uintmax_t uint_dev)
+    uart_dev &get_uart_dev(uintmax_t uint_dev)
     {
         static uart_dev uart_devs[MAX_NUM_UARTs] = {{UART_DEVICE_ID}};
         return uart_devs[uint_dev];

@@ -27,10 +27,10 @@ class m25p64
 public:
     m25p64(bsp::spi &, bsp::output &);
     ~m25p64() = default;
-    std::int16_t program_page(std::uint32_t, const void *, std::uint8_t);
-    std::int16_t verify_electonic_signature(void);
-    std::int16_t verify_identification(void);
-    std::int16_t read(std::uint32_t, void *, std::size_t);
+    int16_t program_page(uint32_t, const void *, uint8_t);
+    int16_t verify_electonic_signature(void);
+    int16_t verify_identification(void);
+    int16_t read(uint32_t, void *, size_t);
 
 private:
     bsp::spi &rspi;

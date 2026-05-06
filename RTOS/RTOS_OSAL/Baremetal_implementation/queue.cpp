@@ -17,7 +17,7 @@
 /*********************************************** Data types  **************************************************/
 namespace rtos_osal
 {
-  queue::queue(const char *pachr_queue_name, std::uint32_t u32_depth, std::size_t sz_entry_size, void *pv_queue_mem)
+  queue::queue(const char *pachr_queue_name, uint32_t u32_depth, size_t sz_entry_size, void *pv_queue_mem)
   {
     (void)pachr_queue_name;
     (void)u32_depth;
@@ -26,7 +26,7 @@ namespace rtos_osal
     (void)pv_queue_mem;
   }
 
-  tenu_osal_status queue::receive(void *pv_buff, std::size_t sz_buff_len, std::uint32_t u32_timeout_ms)
+  tenu_osal_status queue::receive(void *pv_buff, size_t sz_buff_len, uint32_t u32_timeout_ms)
   {
     (void)pv_buff;
     (void)sz_buff_len;
@@ -34,7 +34,7 @@ namespace rtos_osal
     return osal_success;
   }
 
-  tenu_osal_status queue::receive_from_isr(void *pv_buff, std::size_t sz_buff_len)
+  tenu_osal_status queue::receive_from_isr(void *pv_buff, size_t sz_buff_len)
   {
     (void)pv_buff;
     (void)sz_buff_len;
@@ -42,7 +42,7 @@ namespace rtos_osal
   }
 
 
-  tenu_osal_status queue::send(const void *pv_data, std::size_t sz_buff_len, std::uint32_t u32_timeout_ms)
+  tenu_osal_status queue::send(const void *pv_data, size_t sz_buff_len, uint32_t u32_timeout_ms)
   {
     (void)pv_data;
     (void)sz_buff_len;
@@ -50,14 +50,14 @@ namespace rtos_osal
     return osal_success;
   }
 
-  tenu_osal_status queue::send_from_isr(const void *pv_data, std::size_t sz_buff_len)
+  tenu_osal_status queue::send_from_isr(const void *pv_data, size_t sz_buff_len)
   {
     (void)pv_data;
     (void)sz_buff_len;
     return osal_success;
   }
 
-  std::uint32_t queue::get_id(void)
+  uint32_t queue::get_id(void)
   {
     return 0;
   }

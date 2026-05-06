@@ -10,7 +10,11 @@
 #ifndef BSP_IO_H_
 #define BSP_IO_H_
 
-#include "cstdint"
+#ifndef __TI_COMPILER_VERSION__
+#include <cstdint>
+#else
+#include <stdint.h>
+#endif
 #include <noncopyable.hpp>
 #include "bsp_objects.hpp"
 /***********************************************  Defines    **************************************************/
@@ -45,10 +49,10 @@ namespace bsp
         io(io_dev &);
         ~io(void) = default;
         static io &get_instance(void);
-        std::int16_t init(tenu_io_direction);
-        std::int16_t read(tenu_pin_state &) const;
-        std::int16_t write(tenu_pin_state) const;
-        std::int16_t set_bias(tenu_io_bias_mode);
+        int16_t init(tenu_io_direction);
+        int16_t read(tenu_pin_state &) const;
+        int16_t write(tenu_pin_state) const;
+        int16_t set_bias(tenu_io_bias_mode);
 
     protected:
         io_dev &rio_dev;
@@ -62,12 +66,12 @@ namespace bsp
         output(io_dev &);
         ~output(void) = default;
         static output &get_instance(void);
-        std::int16_t init(tenu_io_direction) = delete;
-        std::int16_t init(void);
-        std::int16_t set_bias(tenu_io_bias_mode) = delete;
+        int16_t init(tenu_io_direction) = delete;
+        int16_t init(void);
+        int16_t set_bias(tenu_io_bias_mode) = delete;
     };
 
-    io_dev &get_io_dev(std::uintmax_t);
+    io_dev &get_io_dev(uintmax_t);
 }
 
 #endif

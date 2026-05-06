@@ -29,9 +29,9 @@
 /***********************************************  Defines    **************************************************/
 
 /***********************************************  Constants   *************************************************/
-static constexpr std::uint32_t gu32_spl_flash_start_addr = UINT32_C(0x400000);
-static constexpr std::size_t gsz_spl_size = 0x100000;
-static constexpr std::uint32_t gu32_spl_main_memory_start_addr = UINT32_C(0x20000000);
+static constexpr uint32_t gu32_spl_flash_start_addr = UINT32_C(0x400000);
+static constexpr size_t gsz_spl_size = 0x100000;
+static constexpr uint32_t gu32_spl_main_memory_start_addr = UINT32_C(0x20000000);
 /******************************************* Local Global Variables *******************************************/
 static bsp::sys *pobj_sys{&bsp::sys::get_instance()};
 /*SPI*/

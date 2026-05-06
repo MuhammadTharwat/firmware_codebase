@@ -19,7 +19,7 @@
 namespace rtos_osal
 {
   thread::thread(const char *pachr_thread_name, tpfn_thread pfn_thread,
-                 std::uint8_t *pu8_thread_stack, std::size_t sz_stack, tenu_thread_priority enu_priority, void *pv_args)
+                 uint8_t *pu8_thread_stack, size_t sz_stack, tenu_thread_priority enu_priority, void *pv_args)
   {
     (void)(pachr_thread_name);
     (void)(pfn_thread);
@@ -29,7 +29,7 @@ namespace rtos_osal
     (void)(pv_args);
   }
 
-  std::uint32_t thread::get_id(void)
+  uint32_t thread::get_id(void)
   {
     return 0u;
   }
@@ -49,7 +49,7 @@ namespace rtos_osal
     return osal_success;
   }
 
-  tenu_osal_status delay(std::uint32_t u32_delay_ms)
+  tenu_osal_status delay(uint32_t u32_delay_ms)
   {
     (void)(u32_delay_ms);
     return osal_success;

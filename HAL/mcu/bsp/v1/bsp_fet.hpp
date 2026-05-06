@@ -25,21 +25,21 @@ namespace bsp
       public:
         fet_base(void) = default;
         ~fet_base(void) = default;
-        virtual std::int16_t turn_on(void) const = 0;
-        virtual std::int16_t turn_off(void) const = 0;
+        virtual int16_t turn_on(void) const = 0;
+        virtual int16_t turn_off(void) const = 0;
     };
 
-    template <std::uint8_t u8_inst>
+    template <uint8_t u8_inst>
     class fet: public fet_base
     {
       public:
         ~fet(void) = default;
         static fet &get_instance(void);
-        std::int16_t turn_on(void) const override;
-        std::int16_t turn_off(void) const override;
+        int16_t turn_on(void) const override;
+        int16_t turn_off(void) const override;
       private:
         fet(void) = default;
-        std::uint8_t u8_users;
+        uint8_t u8_users;
     };
 }
 #endif

@@ -14,7 +14,11 @@
 #include <noncopyable.hpp>
 #include <rtos_imp.hpp>
 #include <rtos_err.hpp>
+#ifndef __TI_COMPILER_VERSION__
 #include <cstdint>
+#else
+#include <stdint.h>
+#endif
 /***********************************************  Defines    **************************************************/
 
 
@@ -28,15 +32,15 @@ namespace rtos_osal
     class semaphore : private noncopyable
     {
     public:
-        semaphore(std::uint32_t u32_max_count, std::uint32_t u32_initial_count);
+        semaphore(uint32_t u32_max_count, uint32_t u32_initial_count);
         /* TO-DO ABBAS: revisiti default destructor if we should rely on*/
         ~semaphore() = default;
-        tenu_osal_status acquire(std::uint32_t u32_timeout_ms);
+        tenu_osal_status acquire(uint32_t u32_timeout_ms);
         tenu_osal_status release(void);
         tenu_osal_status release_from_isr(void);
         tenu_osal_status del(void);
-        std::uint32_t get_count(void);
-        std::uint32_t get_id(void);
+        uint32_t get_count(void);
+        uint32_t get_id(void);
 
     private:
         semaphore_mem str_sem_mem;

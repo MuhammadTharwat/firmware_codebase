@@ -18,13 +18,13 @@
 /*********************************************** Data types  **************************************************/
 namespace rtos_osal
 {
-  semaphore::semaphore(std::uint32_t u32_max_count, std::uint32_t u32_initial_count)
+  semaphore::semaphore(uint32_t u32_max_count, uint32_t u32_initial_count)
   {
     (void)u32_max_count;
     (void)u32_initial_count;
   }
 
-  tenu_osal_status semaphore::acquire(std::uint32_t u32_timeout_ms)
+  tenu_osal_status semaphore::acquire(uint32_t u32_timeout_ms)
   {
     (void)u32_timeout_ms;
 		return osal_success;
@@ -49,7 +49,7 @@ namespace rtos_osal
     return 0;
   }
 
-  std::uint32_t semaphore::get_id(void)
+  uint32_t semaphore::get_id(void)
   {
     return 0;
   }

@@ -27,7 +27,7 @@ extern "C" void _fini(void) {}
 
 /*********************************************** Data types  **************************************************/
 
-extern "C" void boot_image_wrapper(std::uint32_t);
+extern "C" void boot_image_wrapper(uint32_t);
 
 namespace bsp
 {
@@ -45,13 +45,13 @@ namespace bsp
         return obj_sys_singleton;
     }
 	
-    std::int16_t sys::get_id(std::uint8_t au8_sys_id[ID_LEN]) const
+    int16_t sys::get_id(uint8_t au8_sys_id[ID_LEN]) const
     {
         (void)(au8_sys_id);
         return GENERIC_SUCCESS;
     }
 
-    std::uint32_t sys::get_cpu_frequency(void) const
+    uint32_t sys::get_cpu_frequency(void) const
     {
         return 0;
     }
@@ -71,7 +71,7 @@ namespace bsp
         
     }
 
-    void sys::boot_image(std::uint32_t u32_image_addr)
+    void sys::boot_image(uint32_t u32_image_addr)
     {
         boot_image_wrapper(u32_image_addr);
     }

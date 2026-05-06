@@ -38,7 +38,7 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t output::init(void)
+    int16_t output::init(void)
     {
         XGpioPs_Config *ConfigPtr;
         /* The driver instance for GPIO Device. */
@@ -55,7 +55,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t io::write(tenu_pin_state enu_state) const
+    int16_t io::write(tenu_pin_state enu_state) const
     {
         switch (enu_state)
         {
@@ -79,7 +79,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t io::read(tenu_pin_state &renu_state) const
+    int16_t io::read(tenu_pin_state &renu_state) const
     {
 
         if (0 == XGpioPs_ReadPin(&rio_dev.Gpio, rio_dev.u32_idx))
@@ -93,7 +93,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    io_dev &get_io_dev(std::uintmax_t uint_dev)
+    io_dev &get_io_dev(uintmax_t uint_dev)
     {
         static io_dev io_devs[MAX_NUM_IOs] = {{IO_0}};
         return io_devs[uint_dev];

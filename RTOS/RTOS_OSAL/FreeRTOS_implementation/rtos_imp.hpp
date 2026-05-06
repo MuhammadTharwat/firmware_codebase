@@ -42,7 +42,7 @@ namespace rtos_osal
   struct thread_mem
   {
     char achr_name[MAX_THREAD_NAME_LEN];
-    std::size_t sz_stack;
+    size_t sz_stack;
     UBaseType_t enu_priority;
     StackType_t *pstr_stack;
     TaskHandle_t hdl_thread;
@@ -53,8 +53,8 @@ namespace rtos_osal
   {
     QueueHandle_t hdl_queue;
     StaticQueue_t str_q_attr;
-    std::size_t sz_depth;
-    std::size_t sz_entry;
+    size_t sz_depth;
+    size_t sz_entry;
   };
 
   struct timer_mem

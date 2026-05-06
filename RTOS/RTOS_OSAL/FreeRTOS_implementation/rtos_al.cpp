@@ -47,26 +47,26 @@ namespace rtos_osal
 		return enu_kernel_status;
 	}
 
-	tenu_osal_status kernel_suspend(std::uint32_t &u32_suspend_time_ms)
+	tenu_osal_status kernel_suspend(uint32_t &u32_suspend_time_ms)
 	{
 		(void) u32_suspend_time_ms;
 		/*AD-TODO:*/
 		return osal_success;
 	}
 
-	tenu_osal_status kernel_resume(std::uint32_t u32_suspend_time_ms)
+	tenu_osal_status kernel_resume(uint32_t u32_suspend_time_ms)
 	{
 		/*AD-TODO:*/
 		(void) u32_suspend_time_ms;
 		return osal_success;
 	}
 
-	std::uint32_t kernel_get_ticks(void)
+	uint32_t kernel_get_ticks(void)
 	{
 		return xTaskGetTickCount();
 	}
 
-	std::uint32_t kernel_get_ms(void)
+	uint32_t kernel_get_ms(void)
 	{
 		return (portTICK_RATE_MS * xTaskGetTickCount());
 	}

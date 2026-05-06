@@ -11,7 +11,12 @@
 #ifndef BSP_UART_H_
 #define BSP_UART_H_
 
+#ifndef __TI_COMPILER_VERSION__
 #include <cstdint>
+#else
+#include <stdint.h>
+#include <stddef.h>
+#endif
 #include <noncopyable.hpp>
 #include <mutex.hpp>
 /***********************************************  Defines    **************************************************/
@@ -60,26 +65,30 @@ namespace bsp
         bool b_msb_first;
     };
 
+#ifndef __TI_COMPILER_VERSION__
     using tpfn_uart_tx_handler = void (*)(void);
-    using tpfn_uart_rx_handler = void (*)(const void *, std::size_t);
-
+    using tpfn_uart_rx_handler = void (*)(const void *, size_t);
+#else
+    typedef void (*tpfn_uart_tx_handler)(void);
+    typedef void (*tpfn_uart_rx_handler)(const void *, size_t);
+#endif
     class uart : private noncopyable
     {
     public:
         uart(uart_dev &);
         ~uart() = default;
-        std::int16_t init(const tstr_uart_init &) const;
+        int16_t init(const tstr_uart_init &) const;
         void deinit(void) const;
-        std::int16_t change_br(tenu_uart_baud_rate) const;
-        std::int16_t tx(const void *, std::size_t, tpfn_uart_tx_handler) const;
-        std::int16_t rx(void *, std::size_t, tpfn_uart_rx_handler, std::uint32_t) const;
+        int16_t change_br(tenu_uart_baud_rate) const;
+        int16_t tx(const void *, size_t, tpfn_uart_tx_handler) const;
+        int16_t rx(void *, size_t, tpfn_uart_rx_handler, uint32_t) const;
         rtos_osal::mutex obj_mtx;
 
     private:
         uart_dev &ruart_dev;
     };
 
-    uart_dev &get_uart_dev(std::uintmax_t);
+    uart_dev &get_uart_dev(uintmax_t);
 
 }
 

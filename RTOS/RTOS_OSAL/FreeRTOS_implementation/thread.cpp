@@ -23,7 +23,7 @@
 namespace rtos_osal
 {
   thread::thread(const char *pachr_thread_name, tpfn_thread pfn_thread,
-                 std::uint8_t *pu8_thread_stack, std::size_t sz_stack, tenu_thread_priority enu_priority, void *pv_args)
+                 uint8_t *pu8_thread_stack, size_t sz_stack, tenu_thread_priority enu_priority, void *pv_args)
       : str_thread_mem{
               {0},
               sz_stack / sizeof(StackType_t),
@@ -35,7 +35,7 @@ namespace rtos_osal
         pv_args(pv_args)
 
   {
-    std::uint8_t u8_len = 0;
+    uint8_t u8_len = 0;
     if (nullptr == pachr_thread_name)
     {
       /*Do nothing*/
@@ -55,9 +55,9 @@ namespace rtos_osal
     return ((nullptr != str_thread_mem.hdl_thread) ? osal_success : osal_err);
   }
 
-  std::uint32_t thread::get_id(void)
+  uint32_t thread::get_id(void)
   {
-    return reinterpret_cast<std::uint32_t>(str_thread_mem.hdl_thread);
+    return reinterpret_cast<uint32_t>(str_thread_mem.hdl_thread);
   }
 
   tenu_osal_status thread::del(void)
@@ -78,7 +78,7 @@ namespace rtos_osal
     return osal_success;
   }
 
-  tenu_osal_status thread::delay(std::uint32_t u32_delay_ms)
+  tenu_osal_status thread::delay(uint32_t u32_delay_ms)
   {
     vTaskDelay(u32_delay_ms);
     return osal_success;
@@ -92,12 +92,12 @@ namespace rtos_osal
     return osal_success;
   }
 
-  tenu_osal_status thread::flags_set(std::uint32_t u32_flags)
+  tenu_osal_status thread::flags_set(uint32_t u32_flags)
   {
     return osal_err_map(xTaskNotify(str_thread_mem.hdl_thread, u32_flags, eSetBits));
   }
 
-  tenu_osal_status flags_wait(std::uint32_t u32_flags, std::uint32_t u32_timeout)
+  tenu_osal_status flags_wait(uint32_t u32_flags, uint32_t u32_timeout)
   {
     uint32_t u32_flag_val = 0;
     tenu_osal_status enu_osal_status = osal_err;
@@ -126,7 +126,7 @@ namespace rtos_osal
     return enu_osal_status;
   }
 
-  tenu_osal_status thread::flags_set_from_isr(std::uint32_t u32_flags_val)
+  tenu_osal_status thread::flags_set_from_isr(uint32_t u32_flags_val)
   {
     BaseType_t u32_high_task_awoken = pdFALSE;
     tenu_osal_status enu_osal_status = osal_err_map(xTaskNotifyFromISR(str_thread_mem.hdl_thread, u32_flags_val, eSetBits, &u32_high_task_awoken));

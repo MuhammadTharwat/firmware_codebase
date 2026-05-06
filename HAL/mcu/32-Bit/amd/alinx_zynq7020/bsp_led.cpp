@@ -36,7 +36,7 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t led::init(void) const
+    int16_t led::init(void) const
     {
         XGpioPs_Config *ConfigPtr;
         /* The driver instance for GPIO Device. */
@@ -53,24 +53,24 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t led::on(void) const
+    int16_t led::on(void) const
     {
         XGpioPs_WritePin(&rled_dev.Gpio, rled_dev.u32_idx, 0x0);
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t led::off(void) const
+    int16_t led::off(void) const
     {
         XGpioPs_WritePin(&rled_dev.Gpio, rled_dev.u32_idx, 0x1);
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t led::toggle(void) const
+    int16_t led::toggle(void) const
     {
         return GENERIC_SUCCESS;
     }
 
-    led_dev &get_led_dev(std::uintmax_t uint_dev)
+    led_dev &get_led_dev(uintmax_t uint_dev)
     {
         static led_dev led_devs[MAX_NUM_LEDs] = {LED_0, LED_1, LED_2};
         return led_devs[uint_dev];

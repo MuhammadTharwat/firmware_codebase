@@ -48,7 +48,7 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t output::init(void)
+    int16_t output::init(void)
     {
         /*Set output direction*/
         uint32_t u32_reg = IORD_GPIO_DIRECTION_REG;
@@ -60,7 +60,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t io::write(tenu_pin_state enu_state) const
+    int16_t io::write(tenu_pin_state enu_state) const
     {
         uint32_t u32_reg = IORD_GPIO_OUTPUT_REG;
         switch (enu_state)
@@ -86,7 +86,7 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    io_dev &get_io_dev(std::uintmax_t uint_dev)
+    io_dev &get_io_dev(uintmax_t uint_dev)
     {
         static io_dev io_devs[MAX_NUM_IOs] = {{IO_0}};
         return io_devs[uint_dev];

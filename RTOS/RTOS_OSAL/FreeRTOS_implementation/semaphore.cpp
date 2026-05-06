@@ -22,14 +22,14 @@
 /*********************************************** Data types  **************************************************/
 namespace rtos_osal
 {
-  semaphore::semaphore(std::uint32_t u32_max_count, std::uint32_t u32_initial_count)
+  semaphore::semaphore(uint32_t u32_max_count, uint32_t u32_initial_count)
   {
 		str_sem_mem.hdl_sem = xSemaphoreCreateCountingStatic(u32_max_count, u32_initial_count, &this->str_sem_mem.str_sem_attrb);
   }
 
-  tenu_osal_status semaphore::acquire(std::uint32_t u32_timeout_ms)
+  tenu_osal_status semaphore::acquire(uint32_t u32_timeout_ms)
   {
-		return osal_err_map(xSemaphoreTake(str_sem_mem.hdl_sem, (std::numeric_limits<std::uint32_t>::max() == u32_timeout_ms) ? portMAX_DELAY : (u32_timeout_ms / portTICK_PERIOD_MS)));
+		return osal_err_map(xSemaphoreTake(str_sem_mem.hdl_sem, (std::numeric_limits<uint32_t>::max() == u32_timeout_ms) ? portMAX_DELAY : (u32_timeout_ms / portTICK_PERIOD_MS)));
   }
   tenu_osal_status semaphore::release(void)
   {
@@ -66,8 +66,8 @@ namespace rtos_osal
     return uxSemaphoreGetCount(str_sem_mem.hdl_sem);
   }
 
-  std::uint32_t semaphore::get_id(void)
+  uint32_t semaphore::get_id(void)
   {
-    return reinterpret_cast<std::uint32_t>(str_sem_mem.hdl_sem);
+    return reinterpret_cast<uint32_t>(str_sem_mem.hdl_sem);
   }
 }

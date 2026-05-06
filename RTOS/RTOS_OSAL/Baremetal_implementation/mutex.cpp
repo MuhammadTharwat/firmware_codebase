@@ -23,7 +23,7 @@ namespace rtos_osal
 
 	}
 
-	tenu_osal_status mutex::lock(std::uint32_t u32_timeout_ms)
+	tenu_osal_status mutex::lock(uint32_t u32_timeout_ms)
 	{
 		(void)(u32_timeout_ms);
 		return osal_success;

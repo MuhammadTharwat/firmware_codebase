@@ -47,10 +47,10 @@ public:
    * @param [in] b_new_line
    * @return none
    */
-  void log_str_uint(const char *, std::uint8_t, tenu_radix, bool);
-  void log_str_uint(const char *, std::uint16_t, tenu_radix, bool);
-  void log_str_uint(const char *, std::uint32_t, tenu_radix, bool);
-  void log_str_uint(const char *, std::uint64_t, tenu_radix, bool);
+  void log_str_uint(const char *, uint8_t, tenu_radix, bool);
+  void log_str_uint(const char *, uint16_t, tenu_radix, bool);
+  void log_str_uint(const char *, uint32_t, tenu_radix, bool);
+  void log_str_uint(const char *, uint64_t, tenu_radix, bool);
 
   /**
    * API to print signed int
@@ -59,10 +59,10 @@ public:
    * @param [in] b_new_line
    * @return none
    */
-  void log_str_sint(const char *, std::int8_t, bool);
-  void log_str_sint(const char *, std::int16_t, bool);
-  void log_str_sint(const char *, std::int32_t, bool);
-  void log_str_sint(const char *, std::int64_t, bool);
+  void log_str_sint(const char *, int8_t, bool);
+  void log_str_sint(const char *, int16_t, bool);
+  void log_str_sint(const char *, int32_t, bool);
+  void log_str_sint(const char *, int64_t, bool);
   /**
    * API to print string.
    * @param [in] pchar_str

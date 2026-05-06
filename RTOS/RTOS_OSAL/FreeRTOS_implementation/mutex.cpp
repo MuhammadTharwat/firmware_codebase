@@ -28,9 +28,9 @@ namespace rtos_osal
 		/*MT-TODO: Add error checking*/
 	}
 
-	tenu_osal_status mutex::lock(std::uint32_t u32_timeout_ms)
+	tenu_osal_status mutex::lock(uint32_t u32_timeout_ms)
 	{
-		return osal_err_map(xSemaphoreTake(str_mtx_mem.hdl_mtx, (std::numeric_limits<std::uint32_t>::max() == u32_timeout_ms) ? portMAX_DELAY : (u32_timeout_ms / portTICK_PERIOD_MS)));
+		return osal_err_map(xSemaphoreTake(str_mtx_mem.hdl_mtx, (std::numeric_limits<uint32_t>::max() == u32_timeout_ms) ? portMAX_DELAY : (u32_timeout_ms / portTICK_PERIOD_MS)));
 	}
 
 	tenu_osal_status mutex::unlock(void)
@@ -49,8 +49,8 @@ namespace rtos_osal
 		return ((xSemaphoreGetMutexHolder((xSemaphoreHandle)str_mtx_mem.hdl_mtx) == xTaskGetCurrentTaskHandle()) ? osal_success: osal_err);
 	}
 
-	std::uint32_t mutex::get_id(void)
+	uint32_t mutex::get_id(void)
 	{
-		return reinterpret_cast<std::uint32_t>(str_mtx_mem.hdl_mtx);
+		return reinterpret_cast<uint32_t>(str_mtx_mem.hdl_mtx);
 	}
 }

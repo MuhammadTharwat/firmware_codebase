@@ -14,7 +14,11 @@
 #include <noncopyable.hpp>
 #include <rtos_imp.hpp>
 #include <rtos_err.hpp>
+#ifndef __TI_COMPILER_VERSION__
 #include <cstdint>
+#else
+#include <stdint.h>
+#endif
 /***********************************************  Defines    **************************************************/
 
 
@@ -30,11 +34,11 @@ namespace rtos_osal
 	public:
 		mutex(void);
 		~mutex(void) = default;
-		tenu_osal_status lock(std::uint32_t);
+		tenu_osal_status lock(uint32_t);
 		tenu_osal_status unlock(void);
 		tenu_osal_status del(void);
 		tenu_osal_status is_held(void);
-		std::uint32_t get_id(void);
+		uint32_t get_id(void);
 
 	private:
 		mutex_mem str_mtx_mem;

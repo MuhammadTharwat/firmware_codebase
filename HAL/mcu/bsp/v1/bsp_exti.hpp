@@ -41,21 +41,21 @@ namespace bsp
 	public:
 		exti_base(void);
 		~exti_base(void) = default;
-		virtual std::int16_t init(void) const = 0;
+		virtual int16_t init(void) const = 0;
 		virtual void deinit(void) const = 0;
-		virtual std::int16_t activate(std::uint8_t, const tpfn_exti_cb &, const tenu_exti_mode &) = 0;
+		virtual int16_t activate(uint8_t, const tpfn_exti_cb &, const tenu_exti_mode &) = 0;
 		virtual void deactivate(void) const = 0;
 	};
 
-	template <std::uint8_t u8_inst>
+	template <uint8_t u8_inst>
 	class exti : private noncopyable, public exti_base
 	{
 	public:
 		~exti(void) = default;
 		static exti &get_instance(void);
-		std::int16_t init(void) const override;
+		int16_t init(void) const override;
 		void deinit(void) const override;
-		std::int16_t activate(std::uint8_t, const tpfn_exti_cb &, const tenu_exti_mode &) override;
+		int16_t activate(uint8_t, const tpfn_exti_cb &, const tenu_exti_mode &) override;
 		void deactivate(void) const override;
 
 	private:

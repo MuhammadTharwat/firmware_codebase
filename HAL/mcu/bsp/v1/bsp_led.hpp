@@ -11,7 +11,11 @@
 #ifndef BSP_LED_H_
 #define BSP_LED_H_
 
-#include "cstdint"
+#ifndef __TI_COMPILER_VERSION__
+#include <cstdint>
+#else
+#include <stdint.h>
+#endif
 #include <noncopyable.hpp>
 #include "bsp_objects.hpp"
 /***********************************************  Defines    **************************************************/
@@ -29,16 +33,16 @@ namespace bsp
 	public:
 		led(led_dev &);
 		~led(void) = default;
-		std::int16_t init(void) const;
-		std::int16_t on(void) const;
-		std::int16_t off(void) const;
-		std::int16_t toggle(void) const;
+		int16_t init(void) const;
+		int16_t on(void) const;
+		int16_t off(void) const;
+		int16_t toggle(void) const;
 
 	private:
 		led_dev &rled_dev;
 	};
 
-	led_dev &get_led_dev(std::uintmax_t);
+	led_dev &get_led_dev(uintmax_t);
 }
 
 /******************************************      API Prototypes      *************************************/

@@ -8,7 +8,6 @@
  ******************************************************************************
  */
 #include "bsp_spi.hpp"
-#include "system.h"
 #include "general_includes.hpp"
 
 /******************************************   Macros **********************************************************/
@@ -57,10 +56,10 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t spi::init(std::uint16_t u16_spi_clk_divider, tenu_spi_mode enu_spi_mode, bool b_msb_first)
+    int16_t spi::init(uint16_t u16_spi_clk_divider, tenu_spi_mode enu_spi_mode, bool b_msb_first)
     {
-        std::int16_t s16_ret = GENERIC_SUCCESS;
-        std::uint32_t u32_reg = 0u;
+        int16_t s16_ret = GENERIC_SUCCESS;
+        uint32_t u32_reg = 0u;
 
         u32_reg |= SPI_CLK_DIVISOR_MASK & u16_spi_clk_divider;
 
@@ -68,27 +67,23 @@ namespace bsp
 
         switch (enu_spi_mode)
         {
-        case cpol_low_cpha_low:
+        case spi_mode_pol_high_ph_1st_edge:
         {
             break;
         }
 
-        case cpol_low_cpha_high:
+        case spi_mode_pol_high_ph_2nd_edge:
         {
-            u32_reg |= SPI_CPHA_MASK;
             break;
         }
 
-        case cpol_high_cpha_low:
+        case spi_mode_pol_low_ph_1st_edge:
         {
-            u32_reg |= SPI_CPOL_MASK;
             break;
         }
 
-        case cpol_high_cpha_high:
+        case spi_mode_pol_low_ph_2nd_edge:
         {
-            u32_reg |= SPI_CPOL_MASK;
-            u32_reg |= SPI_CPHA_MASK;
             break;
         }
 
@@ -100,7 +95,7 @@ namespace bsp
 
         if (GENERIC_SUCCESS == s16_ret)
         {
-            IOWR_CFG_REG(this->rspi_dev.u32_base_addr, u32_reg);
+            
         }
         else
         {
@@ -110,20 +105,20 @@ namespace bsp
         return s16_ret;
     }
 
-    std::int16_t spi::tx(const void *pv_data, std::size_t sz_data_len, tpfun_spi_tx_cb pfn_tx_handler)
+    int16_t spi::tx(const void *pv_data, size_t sz_data_len, bsp::tpfun_spi_tx_cb pfn_tx_handler)
     {
 
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t spi::rx(void *pv_data, std::size_t sz_data_len, tpfun_spi_rx_cb pfn_rx_handler)
+    int16_t spi::rx(void *pv_data, size_t sz_data_len, bsp::tpfun_spi_rx_cb pfn_rx_handler)
     {
         return GENERIC_SUCCESS;
     }
 
-    spi_dev &get_spi_dev(std::uintmax_t uint_dev)
+    spi_dev &get_spi_dev(uintmax_t uint_dev)
     {
-        static spi_dev spi_devs[MAX_NUM_SPI] = {{SPI0_BASE}};
+        static spi_dev spi_devs[MAX_NUM_SPI] = {SPI0_BASE};
         return spi_devs[uint_dev];
     }
 }

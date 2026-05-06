@@ -14,7 +14,12 @@
 #include <noncopyable.hpp>
 #include <rtos_imp.hpp>
 #include <rtos_err.hpp>
+#ifndef __TI_COMPILER_VERSION__
 #include <cstdint>
+#else
+#include <stdint.h>
+#include <cstddef>
+#endif
 /***********************************************  Defines    **************************************************/
 
 
@@ -43,7 +48,7 @@ namespace rtos_osal
 		 * @param[in]   QueueMemory queue memory buffer (Must be >= QueueDepth * QuaueEntrySize) 
 		 * 							or NULL for Dynamic allocation
 		 * */
-		explicit queue(const char *, std::uint32_t, std::size_t, void *);
+		explicit queue(const char *, uint32_t, size_t, void *);
 
 		~queue(void) = default;
 
@@ -59,7 +64,7 @@ namespace rtos_osal
 		 * 
 		 * @return Execution status, see @ref tenu_osal_status
 		 */
-		tenu_osal_status receive(void *, std::size_t, std::uint32_t);
+		tenu_osal_status receive(void *, size_t, uint32_t);
 
 		/**
 		 * @brief Receive a message on a message queue from ISR
@@ -72,7 +77,7 @@ namespace rtos_osal
 		 * @return Execution status, see @ref tenu_osal_status
 		 */
 
-		tenu_osal_status receive_from_isr(void *, std::size_t);
+		tenu_osal_status receive_from_isr(void *, size_t);
 
 		/**
 		 * @brief Put a message on a message queue
@@ -86,7 +91,7 @@ namespace rtos_osal
 		 * 
 		 * @return Execution status, see @ref tenu_osal_status
 		 */
-		tenu_osal_status send(const void *, std::size_t, std::uint32_t);
+		tenu_osal_status send(const void *, size_t, uint32_t);
 
 		/**
 		 * @brief Put a message on a message queue
@@ -99,14 +104,14 @@ namespace rtos_osal
 		 * @return Execution status, see @ref tenu_osal_status
 		 */
 
-		tenu_osal_status send_from_isr(const void *, std::size_t);
+		tenu_osal_status send_from_isr(const void *, size_t);
 
 		/**
 		 * @brief Get queue ID
 		 * 
 		 * @return Queue ID
 		 */
-		std::uint32_t get_id(void);
+		uint32_t get_id(void);
 
 		/**
 		 * @brief Delete Queue

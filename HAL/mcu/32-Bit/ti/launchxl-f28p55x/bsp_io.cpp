@@ -8,7 +8,6 @@
  ******************************************************************************
  */
 #include "bsp_io.hpp"
-#include "system.h"
 #include "general_includes.hpp"
 
 /******************************************   Macros **********************************************************/
@@ -47,12 +46,12 @@ namespace bsp
         /*Do nothing*/
     }
 
-    std::int16_t output::init(void)
+    int16_t output::init(void)
     {
         return GENERIC_SUCCESS;
     }
 
-    std::int16_t io::write(tenu_pin_state enu_state) const
+    int16_t io::write(tenu_pin_state enu_state) const
     {
         switch (enu_state)
         {
@@ -74,9 +73,9 @@ namespace bsp
         return GENERIC_SUCCESS;
     }
 
-    io_dev &get_io_dev(std::uintmax_t uint_dev)
+    io_dev &get_io_dev(uintmax_t uint_dev)
     {
-        static io_dev io_devs[MAX_NUM_IOs] = {{IO_0}};
+        static io_dev io_devs[MAX_NUM_IOs] = {IO_0};
         return io_devs[uint_dev];
     }
 };

@@ -14,7 +14,11 @@
 #include <noncopyable.hpp>
 #include <rtos_imp.hpp>
 #include <rtos_err.hpp>
+#ifndef __TI_COMPILER_VERSION__
 #include <cstdint>
+#else
+#include <stdint.h>
+#endif
 /***********************************************  Defines    **************************************************/
 
 
@@ -25,8 +29,7 @@
 /*********************************************** Data types  **************************************************/
 namespace rtos_osal
 {
-    using tpfn_timer_cb = void (*)(void*);
-    typedef void (*tpfn_thread)(void *);
+    typedef void (*tpfn_timer_cb)(void *);
 
     class timer : private noncopyable
     {
@@ -39,7 +42,7 @@ namespace rtos_osal
         tenu_osal_status is_active(void);
         void* get_id(void);
         tenu_osal_status del(void);
-        std::uint32_t get_hdl(void);
+        uint32_t get_hdl(void);
 
 
     private:

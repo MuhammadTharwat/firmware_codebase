@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.15)
  
 project(LAUNCHXL_F28P55X)
 
-set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/linker.cmd)
+set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/../c2000ware-core-sdk/device_support/f28p55x/common/cmd/28p55x_generic_flash_lnk.cmd)
 include(${CMAKE_CURRENT_SOURCE_DIR}/launchxl-f28p55x.cmake)
 
 set(TI_SDK_FILES 
@@ -53,6 +53,7 @@ set(TI_SDK_FILES
                 ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_sysctrl.c
                 ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_tempsensorconv.c
                 ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_codestartbranch.asm
+                ../c2000ware-core-sdk/device_support/f28p55x/common/source/f28p55x_usdelay.asm
 				)
 
 set(TI_SDK_INCLUDE_DIR  ../c2000ware-core-sdk/driverlib/f28p55x/driverlib
@@ -73,7 +74,7 @@ add_library(${PROJECT_NAME} STATIC ${TI_SDK_FILES}
                                     )
 
 
-target_include_directories (${PROJECT_NAME} PRIVATE ${TI_SDK_INCLUDE_DIR}
+target_include_directories (${PROJECT_NAME} PUBLIC ${TI_SDK_INCLUDE_DIR}
                                                     )
 
 target_include_directories (${PROJECT_NAME}  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
@@ -82,7 +83,7 @@ target_include_directories (${PROJECT_NAME}  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utility/dbg_log)
 
 
-target_link_libraries(${PROJECT_NAME}  PRIVATE	$ENV{CG_TOOL_ROOT}/lib/rts2800_fpu32_eabi.lib
+target_link_libraries(${PROJECT_NAME}  PUBLIC	$ENV{CG_TOOL_ROOT}/lib/rts2800_fpu32_eabi.lib
                                                 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE  )

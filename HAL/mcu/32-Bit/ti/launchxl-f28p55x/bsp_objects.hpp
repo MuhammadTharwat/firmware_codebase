@@ -27,14 +27,16 @@ namespace bsp
 {
 
     /*Led Object*/
-    class led_dev : private noncopyable
+    class led_dev
     {
     public:
         ~led_dev() = default;
-        led_dev(uintmax_t uint_idx) : u32_idx(uint_idx)
+        led_dev(uintmax_t uint_idx, uint32_t u32_cfg) : u32_pin_idx(uint_idx),
+                                                        u32_pin_config(u32_cfg)
         {
         }
-        uint32_t u32_idx;
+        uint32_t u32_pin_idx;
+        uint32_t u32_pin_config;
     };
 
     /*IO Object*/

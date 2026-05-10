@@ -48,6 +48,7 @@ namespace bsp
       tenu_reset_cause get_reset_cause(void) const;
       void reset(void) const;
       void sleep(void) const;
+      void delay_us(uint32_t) const;
       void boot_image(uint32_t);
       static sys &get_instance(void);
     private:

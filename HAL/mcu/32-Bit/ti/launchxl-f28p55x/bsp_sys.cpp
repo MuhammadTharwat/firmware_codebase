@@ -9,6 +9,9 @@
  */
 #include "bsp_sys.hpp"
 #include "general_includes.hpp"
+#include "driverlib.h"
+#include "device.h"
+
 /******************************************   Macros **********************************************************/
 #define LOG_BAUDRATE            115200u
 
@@ -29,7 +32,26 @@ namespace bsp
 {
     sys::sys(void)
     {
+        //
+        // Initializes system control, device clock, and peripherals
+        //
+        Device_init();
 
+        //
+        // Disable pin locks and enable internal pullups.
+        //
+        Device_initGPIO();
+        //
+        // Initializes PIE and clear PIE registers. Disables CPU interrupts.
+        // and clear all CPU interrupt flags.
+        //
+        // Interrupt_initModule();
+
+        // //
+        // // Initialize the PIE vector table with pointers to the shell interrupt
+        // // Service Routines (ISR).
+        // //
+        // Interrupt_initVectorTable();
     }
 
     sys &sys::get_instance(void)
@@ -57,6 +79,11 @@ namespace bsp
     void sys::reset(void) const
     {
 
+    }
+
+    void sys::delay_us(uint32_t u32_us_delay) const
+    {
+        DEVICE_DELAY_US(u32_us_delay);
     }
 
     void sys::sleep(void) const

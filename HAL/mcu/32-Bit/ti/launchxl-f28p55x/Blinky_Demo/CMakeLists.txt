@@ -5,7 +5,7 @@ set(PROJECT_NAME Blinky-launchxl-f28p55x)
 
 project(${PROJECT_NAME} C CXX ASM)
 
-set(EXECUTABLE ${PROJECT_NAME}.out)
+set(EXECUTABLE ${PROJECT_NAME}.elf)
 
 ####################################SOURCE FILES##########################################
 set(SOURCE_FILES ./Blinky.cpp)
@@ -35,4 +35,5 @@ target_link_libraries(${EXECUTABLE} PUBLIC diagnostic_log)
 # Print executable size
 add_custom_command(TARGET ${EXECUTABLE}
         POST_BUILD
-        COMMAND ${CMAKE_GENERATE_HEX} ${EXECUTABLE} -O ${PROJECT_NAME}.hex)
+        COMMAND ${CMAKE_GENERATE_HEX} ${EXECUTABLE} -O ${PROJECT_NAME}.hex) 
+

@@ -47,7 +47,9 @@ public:
    * @param [in] b_new_line
    * @return none
    */
+#ifndef __TI_COMPILER_VERSION__
   void log_str_uint(const char *, uint8_t, tenu_radix, bool);
+#endif
   void log_str_uint(const char *, uint16_t, tenu_radix, bool);
   void log_str_uint(const char *, uint32_t, tenu_radix, bool);
   void log_str_uint(const char *, uint64_t, tenu_radix, bool);
@@ -59,7 +61,9 @@ public:
    * @param [in] b_new_line
    * @return none
    */
+#ifndef __TI_COMPILER_VERSION__
   void log_str_sint(const char *, int8_t, bool);
+#endif
   void log_str_sint(const char *, int16_t, bool);
   void log_str_sint(const char *, int32_t, bool);
   void log_str_sint(const char *, int64_t, bool);

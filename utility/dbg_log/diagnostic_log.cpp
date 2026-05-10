@@ -207,10 +207,12 @@ void diagnostic_logger::log_str(const char *pchar_str, bool b_new_line)
 	this->ruart.obj_mtx.unlock();
 }
 
+#ifndef __TI_COMPILER_VERSION__
 void diagnostic_logger::log_str_uint(const char *pchar_str, uint8_t u8_val, tenu_radix enu_radix, bool b_new_line)
 {
 	this->log_str_uint(pchar_str,static_cast<uint64_t>(u8_val), enu_radix, b_new_line);
 }
+#endif
 
 void diagnostic_logger::log_str_uint(const char *pchr_str, uint16_t u16_val, tenu_radix enu_radix, bool b_new_line)
 {
@@ -233,10 +235,12 @@ void diagnostic_logger::log_str_uint(const char *pchr_str, uint64_t u64_val, ten
 	this->ruart.obj_mtx.unlock();
 }
 
+#ifndef __TI_COMPILER_VERSION__
 void diagnostic_logger::log_str_sint(const char *pchr_str, int8_t s8_val, bool b_new_line)
 {
 	this->log_str_sint(pchr_str, static_cast<int64_t>(s8_val), b_new_line);
 }
+#endif
 
 void diagnostic_logger::log_str_sint(const char *pchr_str, int16_t s16_val, bool b_new_line)
 {

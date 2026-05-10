@@ -4,57 +4,23 @@
  * @description	    UART class implementation
  * @author			Muhammad Tharwat
  * @version		    V0.0
- * @date			31-August-2025
+ * @date			10-May-2026
  ******************************************************************************
  */
 #include "bsp_uart.hpp"
 #include "general_includes.hpp"
 #include "bsp_objects.hpp"
+#include "device.h"
 /******************************************   Macros **********************************************************/
 #define MAX_NUM_UARTs 1
 
-#define UART0_BASE 0x10001000
+#define UART0_BASE SCIA_BASE
 
-/*Register Definition*/
-#define UART_CONFIGURATION_OFFSET UINT32_C(0x00000000)
-#define UART_BR_MASK UINT32_C(0x00000007)
-#define UART_BR_4800 UINT32_C(0x00000000)
-#define UART_BR_9600 UINT32_C(0x00000001)
-#define UART_BR_19200 UINT32_C(0x00000002)
-#define UART_BR_38400 UINT32_C(0x00000003)
-#define UART_BR_57600 UINT32_C(0x00000004)
-#define UART_BR_115200 UINT32_C(0x00000005)
+#define UART0_TX_PIN UINT32_C(29)
+#define UART0_RX_PIN UINT32_C(28)
 
-#define UART_PARITY_MASK UINT32_C(0x00000018)
-#define UART_PARITY_NONE UINT32_C(0x00000000)
-#define UART_PARITY_ODD UINT32_C(0x00000008)
-#define UART_PARITY_EVEN UINT32_C(0x00000010)
-
-
-#define UART_LSB_FIRST_MASK UINT32_C(0x00000020)
-#define UART_CLEAR_ERROR_MASK UINT32_C(0x00000040)
-
-#define UART_TXR_OFFSET UINT32_C(0x00000001)
-
-#define UART_RXR_OFFSET UINT32_C(0x00000002)
-
-#define UART_STATUS_OFFSET UINT32_C(0x00000003)
-#define UART_TX_READY_MASK UINT32_C(0x00000001)
-#define UART_RX_VALID_MASK UINT32_C(0x00000002)
-#define UART_RX_OVERRUN_ERR_MASK UINT32_C(0x00000004)
-#define UART_RX_PARITY_ERR_MASK UINT32_C(0x00000008)
-
-#define IORD_CFG_REG(base) IORD(base, 0)
-#define IOWR_CFG_REG(base, data) IOWR(base, 0, data)
-
-#define IORD_TXR_REG(base) IORD(base, 1)
-#define IOWR_TXR_REG(base, data) IOWR(base, 1, data)
-
-#define IORD_RXR_REG(base) IORD(base, 2)
-#define IOWR_RXR_REG(base, data) IOWR(base, 2, data)
-
-#define IORD_STATUS_REG(base) IORD(base, 3)
-#define IOWR_STATUS_REG(base, data) IOWR(base, 3, data)
+#define UART0_TX_CFG UINT32_C(GPIO_29_SCIA_TX)
+#define UART0_RX_CFG UINT32_C(GPIO_28_SCIA_RX)
 
 /***********************************************  Constants   *************************************************/
 
@@ -75,33 +41,39 @@ namespace bsp
     int16_t uart::init(const tstr_uart_init &rstr_uart_init) const
     {
         int16_t s16_ret = GENERIC_SUCCESS;
-        uint32_t u32_reg = 0u;
+        uint32_t u32_baud;
+        uint32_t u32_configs = SCI_CONFIG_WLEN_8;
+        GPIO_setPinConfig(ruart_dev.u32_tx_pin_cfg);
+        GPIO_setPinConfig(ruart_dev.u32_rx_pin_cfg);
+        GPIO_setPadConfig(ruart_dev.u32_tx_pin, GPIO_PIN_TYPE_STD);
+        GPIO_setPadConfig(ruart_dev.u32_rx_pin, GPIO_PIN_TYPE_PULLUP);
+
         if (true == rstr_uart_init.b_msb_first)
         {
             /*Do nothing, Default is MSB*/
         }
         else
         {
-            u32_reg |= UART_LSB_FIRST_MASK;
+            
         }
 
         switch (rstr_uart_init.enu_parity)
         {
         case uart_parity_none:
         {
-            u32_reg |= UART_PARITY_NONE;
+            u32_configs |= SCI_CONFIG_PAR_NONE;
             break;
         }
 
         case uart_parity_even:
         {
-            u32_reg |= UART_PARITY_EVEN;
+            u32_configs |= SCI_CONFIG_PAR_EVEN;
             break;
         }
 
         case uart_parity_odd:
         {
-            u32_reg |= UART_PARITY_ODD;
+            u32_configs |= SCI_CONFIG_PAR_ODD;
             break;
         }
         }
@@ -110,37 +82,37 @@ namespace bsp
         {
         case uart_br_4800:
         {
-            u32_reg |= UART_BR_4800;
+            u32_baud = 4800;
             break;
         }
 
         case uart_br_9600:
         {
-            u32_reg |= UART_BR_9600;
+            u32_baud = 9600;
             break;
         }
 
         case uart_br_19200:
         {
-            u32_reg |= UART_BR_19200;
+            u32_baud = 19200;
             break;
         }
 
         case uart_br_38400:
         {
-            u32_reg |= UART_BR_38400;
+            u32_baud = 38400;
             break;
         }
 
         case uart_br_57600:
         {
-            u32_reg |= UART_BR_57600;
+            u32_baud = 57600;
             break;
         }
 
         case uart_br_115200:
         {
-            u32_reg |= UART_BR_115200;
+            u32_baud = 115200;
             break;
         }
 
@@ -156,7 +128,12 @@ namespace bsp
             {
             case uart_stop_1_bit:
             {
-                /*Do nothing*/
+                u32_configs |= SCI_CONFIG_STOP_ONE;
+                break;
+            }
+            case uart_stop_2_bit:
+            {
+                u32_configs |= SCI_CONFIG_STOP_TWO;
                 break;
             }
             default:
@@ -172,7 +149,9 @@ namespace bsp
 
         if (GENERIC_SUCCESS == s16_ret)
         {
-
+            SCI_setConfig(ruart_dev.u32_base_addr, DEVICE_LSPCLK_FREQ, u32_baud, u32_configs);
+            SCI_enableModule(ruart_dev.u32_base_addr);
+            SCI_enableFIFO(ruart_dev.u32_base_addr);
         }
         else
         {
@@ -194,9 +173,23 @@ namespace bsp
 
     int16_t uart::tx(const void *pv_data, size_t sz_data_len, tpfn_uart_tx_handler pfn_tx_handler) const
     {
-        (void)(pv_data);
-        (void)(sz_data_len);
-        (void)(pfn_tx_handler);
+        if (nullptr == pfn_tx_handler)
+        {
+            const uint8_t *pu8_bytes = static_cast<const uint8_t *>(pv_data);
+            /*Synchronous, blocking Tx*/
+            for (std::size_t sz_idx = 0; sz_idx < sz_data_len; sz_idx++)
+            {
+                // Wait until TX buffer is ready (blocking)
+                while (SCI_FIFO_TX16 == SCI_getTxFIFOStatus(ruart_dev.u32_base_addr))
+                {
+                }
+                SCI_writeCharBlockingFIFO(ruart_dev.u32_base_addr, static_cast<uint16_t>(pu8_bytes[sz_idx]));
+            }
+        }
+        else
+        {
+            /*Asynchronous Tx*/
+        }
         return GENERIC_SUCCESS;
     }
 
@@ -211,7 +204,7 @@ namespace bsp
 
     uart_dev &get_uart_dev(uintmax_t uint_dev)
     {
-        static uart_dev uart_devs[MAX_NUM_UARTs] = {UART0_BASE};
+        static uart_dev uart_devs[MAX_NUM_UARTs] = uart_dev(UART0_BASE, UART0_TX_PIN, UART0_RX_PIN, UART0_TX_CFG, UART0_RX_CFG);
         return uart_devs[uint_dev];
     }
 }

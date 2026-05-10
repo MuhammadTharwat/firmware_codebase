@@ -36,15 +36,27 @@ int main(void)
 {
   bsp::led obj_led_red(bsp::get_led_dev(0));
   bsp::led obj_led_green(bsp::get_led_dev(1));
+  bsp::uart obj_uart0(bsp::get_uart_dev(0));
+  const bsp::tstr_uart_init str_uart_init = 
+  {
+    bsp::uart_parity_none,
+    bsp::uart_stop_1_bit,
+    bsp::uart_br_115200,
+    false
+  };
+
+  obj_uart0.init(str_uart_init);
   obj_led_red.init();
   obj_led_green.init();
   obj_led_red.on();
   obj_led_green.off();
+  
   while (true)
   {
     pobj_sys->delay_us(200000);
     obj_led_red.toggle();
     obj_led_green.toggle();
+    obj_uart0.tx("Blinky\n", 7, nullptr);
   }
 }
 

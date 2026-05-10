@@ -62,14 +62,24 @@ namespace bsp
     };
 
     /*UART Object*/
-    class uart_dev : private noncopyable
+    class uart_dev
     {
     public:
         ~uart_dev() = default;
-        uart_dev(uint32_t u32_base_addr_in) : u32_base_addr(u32_base_addr_in)
+        uart_dev(uint32_t u32_base_addr_in, uint32_t u32_tx_pin_in, uint32_t u32_rx_pin_in, uint32_t u32_tx_cfg_in, uint32_t u32_rx_cfg_in)
+            : u32_base_addr(u32_base_addr_in),
+              u32_tx_pin(u32_tx_pin_in),
+              u32_rx_pin(u32_rx_pin_in),
+              u32_tx_pin_cfg(u32_tx_cfg_in),
+              u32_rx_pin_cfg(u32_rx_cfg_in)
+
         {
         }
         uint32_t u32_base_addr;
+        uint32_t u32_tx_pin;
+        uint32_t u32_rx_pin;
+        uint32_t u32_tx_pin_cfg;
+        uint32_t u32_rx_pin_cfg;
     };
 }
 

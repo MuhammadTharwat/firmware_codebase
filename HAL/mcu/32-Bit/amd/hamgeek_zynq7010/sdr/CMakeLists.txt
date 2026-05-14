@@ -48,7 +48,7 @@ set(OPTIMIZATION_LEVEL 			-Os)
 ############################### Define Debug Information Level #############################
 set(DEBUG_INFORMATION_LEVEL 	-g3)
 ############################### App Specific Flags ##################
-set(APP_SPECIFIC_FLAGS		"-DDIAGNOSTIC_LOG")
+set(APP_SPECIFIC_FLAGS		"-DDIAGNOSTIC_LOG -DHAVE_DEBUG_MESSAGES")
 
 add_subdirectory(../ ./hamgeek_zynq_7010_sdr)
 target_link_libraries(${EXECUTABLE} PUBLIC hamgeek_zynq_7010_sdr)

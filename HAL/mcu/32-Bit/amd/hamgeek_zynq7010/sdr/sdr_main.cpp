@@ -266,7 +266,7 @@ static struct axi_dac_init tx_dac_init = {
 
 static AD9361_InitParam default_init_param = {
 	/* Device selection */
-	ID_AD9361,	// dev_sel
+	ID_AD9363A,	// dev_sel
 	/* Reference Clock */
 	40000000UL,	//reference_clk_rate
 	/* Base Configuration */
@@ -295,12 +295,12 @@ static AD9361_InitParam default_init_param = {
 	0,		//ensm_enable_pin_pulse_mode_enable *** adi,ensm-enable-pin-pulse-mode-enable
 	0,		//ensm_enable_txnrx_control_enable *** adi,ensm-enable-txnrx-control-enable
 	/* LO Control */
-	4000000000UL,	//rx_synthesizer_frequency_hz *** adi,rx-synthesizer-frequency-hz
-	4000000000UL,	//tx_synthesizer_frequency_hz *** adi,tx-synthesizer-frequency-hz
+	2400000000UL,	//rx_synthesizer_frequency_hz *** adi,rx-synthesizer-frequency-hz
+	2400000000UL,	//tx_synthesizer_frequency_hz *** adi,tx-synthesizer-frequency-hz
 	1,				//tx_lo_powerdown_managed_enable *** adi,tx-lo-powerdown-managed-enable
 	/* Rate & BW Control */
-	{960000000, 240000000, 120000000, 60000000, 30000000, 15000000},// rx_path_clock_frequencies[6] *** adi,rx-path-clock-frequencies
-	{960000000, 240000000, 120000000, 60000000, 30000000, 15000000},// tx_path_clock_frequencies[6] *** adi,tx-path-clock-frequencies
+	{983040000, 245760000, 122880000, 61440000, 30720000, 30720000},// rx_path_clock_frequencies[6] *** adi,rx-path-clock-frequencies
+	{983040000, 122880000, 122880000, 61440000, 30720000, 30720000},// tx_path_clock_frequencies[6] *** adi,tx-path-clock-frequencies
 	18000000,//rf_rx_bandwidth_hz *** adi,rf-rx-bandwidth-hz
 	18000000,//rf_tx_bandwidth_hz *** adi,rf-tx-bandwidth-hz
 	/* RF Port Control */
@@ -583,11 +583,11 @@ int main()
 		DIAGNOSTIC_LOG_STR("AD9361 Err", true);
 	}
 
-	_ASSERT(0 == ad9361_bist_tone(ad9361_phy, BIST_INJ_RX, 937500 * 2, 6, 0));
+	// _ASSERT(0 == ad9361_bist_tone(ad9361_phy, BIST_INJ_RX, 937500 * 2, 6, 0));
 
-	//_ASSERT(0 == ad9361_set_en_state_machine_mode(ad9361_phy, ENSM_MODE_SLEEP));
+	// //_ASSERT(0 == ad9361_set_en_state_machine_mode(ad9361_phy, ENSM_MODE_SLEEP));
 
-	_ASSERT(0 == ad9361_set_rx_fir_config(ad9361_phy, rx_fir_config));
+	// _ASSERT(0 == ad9361_set_rx_fir_config(ad9361_phy, rx_fir_config));
 
 	s32_status = axi_dmac_init(&rx_dmac, &rx_dmac_init);
 	if (s32_status < 0)
@@ -657,10 +657,10 @@ int main()
 	_ASSERT(0 == ad9361_set_en_state_machine_mode(ad9361_phy, ENSM_MODE_SLEEP));
 	Xil_DCacheInvalidateRange((uintptr_t)gas16_adc_buffer, sizeof(gas16_adc_buffer));
 	
-	for(uint32_t idx = 0; idx < ADC_BUFFER_SAMPLES * ADC_CHANNELS; idx +=2)
-	{
-		DIAGNOSTIC_LOG_STR_SINT("",gas16_adc_buffer[idx], true);
-	}
+	// for(uint32_t idx = 0; idx < ADC_BUFFER_SAMPLES * ADC_CHANNELS; idx +=2)
+	// {
+	// 	DIAGNOSTIC_LOG_STR_SINT("",gas16_adc_buffer[idx], true);
+	// }
 	while(true)
 	{
 		gobj_led_0.on();
@@ -673,4 +673,10 @@ int main()
 
 void system_assertion_action(void)
 {
+}
+
+extern "C" int _write(int file, char *ptr, int len)
+{
+	(void)(file);
+  return gobj_uart0.tx(ptr, len, nullptr);
 }

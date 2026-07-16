@@ -1,4 +1,4 @@
-identifier: nrf52833dk/nrf52833
+identifier: dynastream/nrf52832
 name: nRF52833-DK-NRF52833
 type: mcu
 arch: arm
@@ -9,10 +9,6 @@ toolchain:
   - gnuarmemb
 supported:
   - adc
-  - arduino_gpio
-  - arduino_i2c
-  - arduino_spi
-  - usb_device
   - usbd
   - ble
   - gpio

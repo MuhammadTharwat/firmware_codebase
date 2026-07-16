@@ -14,6 +14,6 @@ source ${ZEPHYR_BASE}/zephyr-env.sh
 
 
 To build : 
-1 - $ ./build.sh
+1 - $ ./build.sh nrf52833dk/nrf52833
 
 

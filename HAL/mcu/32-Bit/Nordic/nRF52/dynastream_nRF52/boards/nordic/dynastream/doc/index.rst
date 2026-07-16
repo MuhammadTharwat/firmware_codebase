@@ -1,4 +1,4 @@
-.. zephyr:board:: nrf52833dk
+.. zephyr:board:: dynastream
 
 Overview
 ********

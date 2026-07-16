@@ -4,3 +4,12 @@
 [submodule "RTOS/zephyr"]
 	path = RTOS/zephyr
 	url = https://github.com/zephyrproject-rtos/zephyr.git
+[submodule "HAL/mcu/32-Bit/Nordic/cmsis"]
+	path = HAL/mcu/32-Bit/Nordic/cmsis
+	url = https://github.com/zephyrproject-rtos/cmsis.git
+[submodule "HAL/mcu/32-Bit/Nordic/CMSIS_6"]
+	path = HAL/mcu/32-Bit/Nordic/CMSIS_6
+	url = https://github.com/zephyrproject-rtos/CMSIS_6.git
+[submodule "HAL/mcu/32-Bit/Nordic/hal_nordic"]
+	path = HAL/mcu/32-Bit/Nordic/hal_nordic
+	url = https://github.com/zephyrproject-rtos/hal_nordic.git

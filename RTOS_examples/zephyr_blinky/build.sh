@@ -1,8 +1,7 @@
-source ./venv/bin/activate
-
 source ../../RTOS/zephyr/zephyr-env.sh
-export GNUARMEMB_TOOLCHAIN_PATH=/home/muhammad/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux/gcc-arm-none-eabi-10.3-2021.10
+export GNUARMEMB_TOOLCHAIN_PATH=/opt/gcc-arm-none-eabi-10.3-2021.10/
+export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
 # Now run your standard cmake step:
-cmake -GNinja -DBOARD=$1 -BBuild -DZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
+cmake -GNinja -DBOARD=$1 -BBuild
 
 ninja -C ./Build/

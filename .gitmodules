@@ -13,3 +13,6 @@
 [submodule "HAL/mcu/32-Bit/Nordic/hal_nordic"]
 	path = HAL/mcu/32-Bit/Nordic/hal_nordic
 	url = https://github.com/zephyrproject-rtos/hal_nordic.git
+[submodule "RTOS/sdk-zephyr"]
+	path = RTOS/sdk-zephyr
+	url = https://github.com/nrfconnect/sdk-zephyr.git

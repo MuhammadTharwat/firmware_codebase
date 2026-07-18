@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 FROM python:3.12
 
 # copy the file requirements.txt from the current local working directory into the current container working directory
-COPY RTOS/zephyr/scripts/requirements* /tmp/
+COPY RTOS/sdk-zephyr/scripts/requirements* /tmp/
 
 RUN  apt-get update && apt-get install -y git cmake ninja-build gperf \
   		 ccache dfu-util device-tree-compiler wget \

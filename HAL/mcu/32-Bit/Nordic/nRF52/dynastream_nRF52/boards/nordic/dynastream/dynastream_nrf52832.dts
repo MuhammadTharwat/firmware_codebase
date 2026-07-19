@@ -64,18 +64,6 @@
 			zephyr,code = <INPUT_KEY_2>;
 		};
 	};
-
-	/* These aliases are provided for compatibility with samples */
-	aliases {
-		sw0 = &button_a;
-		sw1 = &button_b;
-		sw2 = &button_c;
-		led0 = &led_a;
-		led1 = &led_b;
-		led2 = &led_c;
-		led2 = &led_d;
-		watchdog0 = &wdt0;
-	};
 };
 
 &reg {

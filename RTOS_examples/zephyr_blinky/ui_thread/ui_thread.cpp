@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
+#include <etl/map.h>
 
 #define UI_THREAD_STACK_SIZE 2048
 

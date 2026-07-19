@@ -11,11 +11,19 @@ set(ZEPHYR_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/hal_n
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/CMSIS_6/)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
-project(Blinky_example)
+project(Blinky_example LANGUAGES C CXX) 
 
 target_sources(app PRIVATE main_thread/main.cpp
                            ui_thread/ui_thread.cpp)
 
+
+#### Link ETL library
+if(NOT TARGET etl)
+add_subdirectory(../../utility/etl ./etl)
+endif()
+target_link_libraries(app PRIVATE etl::etl)
+
+target_compile_options(app PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>)
 
 target_include_directories(app PRIVATE ui_thread/)
 

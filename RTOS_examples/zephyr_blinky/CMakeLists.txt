@@ -13,8 +13,8 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(Blinky_example)
 
-target_sources(app PRIVATE main_thread/main.c
-                           ui_thread/ui_thread.c)
+target_sources(app PRIVATE main_thread/main.cpp
+                           ui_thread/ui_thread.cpp)
 
 
 target_include_directories(app PRIVATE ui_thread/)

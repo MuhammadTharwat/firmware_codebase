@@ -16,3 +16,6 @@
 [submodule "RTOS/sdk-zephyr"]
 	path = RTOS/sdk-zephyr
 	url = https://github.com/nrfconnect/sdk-zephyr.git
+[submodule "utility/etl"]
+	path = utility/etl
+	url = https://github.com/ETLCPP/etl.git

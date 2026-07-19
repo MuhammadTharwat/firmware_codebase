@@ -11,6 +11,12 @@
 
 K_THREAD_STACK_DEFINE(a_ui_thread_stack, UI_THREAD_STACK_SIZE);
 
+static void button_pressed(const struct device *dev,
+                           struct gpio_callback *cb, uint32_t pins)
+{
+    printk("Button pressed at %u\n", k_cycle_get_32());
+}
+
 static void ui_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1);
@@ -18,6 +24,8 @@ static void ui_thread(void *p1, void *p2, void *p3)
     ARG_UNUSED(p3);
     int ret;
     static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NODE, gpios);
+    static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(DT_NODELABEL(button_a), gpios);
+    static struct gpio_callback button_cb_data;
 
     if (!gpio_is_ready_dt(&led))
     {
@@ -29,6 +37,27 @@ static void ui_thread(void *p1, void *p2, void *p3)
     {
         return;
     }
+
+    if (!gpio_is_ready_dt(&button))
+    {
+        return;
+    }
+
+    ret = gpio_pin_configure_dt(&button, GPIO_INPUT);
+    if (ret < 0)
+    {
+        return;
+    }
+
+    ret = gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_TO_ACTIVE);
+    if (ret < 0)
+    {
+        return;
+    }
+
+    gpio_init_callback(&button_cb_data, button_pressed, BIT(button.pin));
+	gpio_add_callback(button.port, &button_cb_data);
+
 
     while (true)
     {

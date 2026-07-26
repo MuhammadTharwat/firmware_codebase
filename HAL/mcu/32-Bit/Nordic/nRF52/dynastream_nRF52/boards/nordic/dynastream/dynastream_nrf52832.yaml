@@ -1,0 +1,19 @@
+identifier: dynastream/nrf52832
+name: nRF52833-DK-NRF52833
+type: mcu
+arch: arm
+ram: 128
+flash: 512
+toolchain:
+  - zephyr
+  - gnuarmemb
+supported:
+  - adc
+  - usbd
+  - ble
+  - gpio
+  - pwm
+  - watchdog
+  - counter
+  - netif:openthread
+vendor: nordic

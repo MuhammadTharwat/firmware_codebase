@@ -1,0 +1,133 @@
+
+/dts-v1/;
+#include <nordic/nrf52832_qfaa.dtsi>
+#include "dynastream_nrf52832-pinctrl.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+	model = "nRF52832-MDK Micro Dev Kit";
+	compatible = "nrf52832-mdk";
+
+	chosen {
+		zephyr,console = &uart0;
+		zephyr,shell-uart = &uart0;
+		zephyr,uart-mcumgr = &uart0;
+		zephyr,bt-mon-uart = &uart0;
+		zephyr,bt-c2h-uart = &uart0;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_a: led_0 {
+			gpios = <&gpio0 24 GPIO_ACTIVE_LOW>;
+			label = "LED A";
+		};
+
+		led_b: led_1 {
+			gpios = <&gpio0 31 GPIO_ACTIVE_LOW>;
+			label = "LED B";
+		};
+
+		led_c: led_2 {
+			gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+			label = "LED C";
+		};
+
+		led_d: led_3 {
+			gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
+			label = "LED D";
+		};
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+
+		button_a: button_0 {
+			gpios = <&gpio0 6 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button switch a";
+			zephyr,code = <INPUT_KEY_0>;
+		};
+
+		button_b: button_1 {
+			gpios = <&gpio0 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button switch b";
+			zephyr,code = <INPUT_KEY_1>;
+		};
+
+		button_c: button_2 {
+			gpios = <&gpio0 16 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button switch c";
+			zephyr,code = <INPUT_KEY_2>;
+		};
+	};
+};
+
+&reg {
+	regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&uicr {
+	gpio-as-nreset;
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&uart0 {
+	status = "okay";
+	compatible = "nordic,nrf-uart";
+	current-speed = <115200>;
+	pinctrl-0 = <&uart0_default>;
+	pinctrl-names = "default";
+};
+
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-1 = <&i2c0_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+&i2c1 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	pinctrl-0 = <&i2c1_default>;
+	pinctrl-1 = <&i2c1_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+&pwm0 {
+	status = "okay";
+	pinctrl-0 = <&pwm0_default>;
+	pinctrl-1 = <&pwm0_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		slot0_partition: partition@0 {
+			label = "image-0";
+			reg = <0x00000000 0x7a000>;   /* 488 KB */
+		};
+
+		storage_partition: partition@7a000 {
+			label = "storage";
+			reg = <0x0007a000 0x00006000>;   /* 24 KB */
+		};
+	};
+};
+

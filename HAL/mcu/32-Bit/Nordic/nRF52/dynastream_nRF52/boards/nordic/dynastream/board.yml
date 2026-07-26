@@ -1,0 +1,6 @@
+board:
+  name: dynastream
+  full_name: dynastream DK
+  vendor: nordic
+  socs:
+  - name: nrf52832

@@ -19,6 +19,3 @@
 [submodule "utility/etl"]
 	path = utility/etl
 	url = https://github.com/ETLCPP/etl.git
-[submodule "AI/tensorflow"]
-	path = AI/tensorflow
-	url = https://github.com/tensorflow/tensorflow.git

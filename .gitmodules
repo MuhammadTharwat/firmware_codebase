@@ -19,3 +19,6 @@
 [submodule "utility/etl"]
 	path = utility/etl
 	url = https://github.com/ETLCPP/etl.git
+[submodule "AI/tflite-micro"]
+	path = AI/tflite-micro
+	url = https://github.com/tensorflow/tflite-micro.git

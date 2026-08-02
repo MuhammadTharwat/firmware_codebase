@@ -2,6 +2,11 @@
 FROM ubuntu:20.04
 FROM python:3.12
 
+# The repo is bind-mounted from the host, so its files are owned by the host
+# UID rather than the container user. Without this, git refuses to read it and
+# Zephyr's BUILD_VERSION / ETL's version lookup silently fall back.
+RUN git config --system --add safe.directory '*'
+
 RUN  apt-get update && apt-get install -y git cmake ninja-build gperf \
   		 ccache dfu-util device-tree-compiler wget \
   		 xz-utils file make gcc gcc-multilib g++-multilib libsdl2-dev libmagic1 tar bzip2 unzip curl

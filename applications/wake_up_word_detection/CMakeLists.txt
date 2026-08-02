@@ -23,6 +23,10 @@ target_sources(app PRIVATE main_thread/main.cpp)
 
 #### Link ETL library
 if(NOT TARGET etl)
+# ETL includes GNUInstallDirs, which cannot infer a libdir when cross-compiling.
+# ETL is header-only and never installed here, so the value is inert; setting it
+# just takes GNUInstallDirs down its non-warning path.
+set(CMAKE_INSTALL_LIBDIR "lib")
 add_subdirectory(../../utility/etl ./etl)
 endif()
 target_link_libraries(app PRIVATE etl::etl)

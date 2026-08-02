@@ -8,10 +8,15 @@ set(BOARD_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/nRF52/dyn
 
 set(ZEPHYR_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/hal_nordic/
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/cmsis/
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/CMSIS_6/)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/CMSIS_6/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/tflite-micro/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/cmsis-nn/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/cmsis-dsp)
+
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
-project(Blinky_example LANGUAGES C CXX) 
+project(Wake-up-word-detection LANGUAGES C CXX) 
 
 target_sources(app PRIVATE main_thread/main.cpp)
 

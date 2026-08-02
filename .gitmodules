@@ -19,6 +19,13 @@
 [submodule "utility/etl"]
 	path = utility/etl
 	url = https://github.com/ETLCPP/etl.git
-[submodule "AI/tflite-micro"]
-	path = AI/tflite-micro
-	url = https://github.com/tensorflow/tflite-micro.git
+[submodule "HAL/mcu/32-Bit/Nordic/tflite-micro"]
+	path = HAL/mcu/32-Bit/Nordic/tflite-micro
+	url = https://github.com/zephyrproject-rtos/tflite-micro.git
+	branch = zephyr-v4.4.0
+[submodule "HAL/mcu/32-Bit/Nordic/cmsis-nn"]
+	path = HAL/mcu/32-Bit/Nordic/cmsis-nn
+	url = https://github.com/zephyrproject-rtos/cmsis-nn.git
+[submodule "HAL/mcu/32-Bit/Nordic/cmsis-dsp"]
+	path = HAL/mcu/32-Bit/Nordic/cmsis-dsp
+	url = https://github.com/zephyrproject-rtos/cmsis-dsp.git

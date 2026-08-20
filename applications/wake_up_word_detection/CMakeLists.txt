@@ -18,7 +18,38 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(Wake-up-word-detection LANGUAGES C CXX) 
 
-target_sources(app PRIVATE main_thread/main.cpp)
+#### tflite-micro's signal-library kernels.
+set(TFLM ${CMAKE_CURRENT_SOURCE_DIR}/../../HAL/mcu/32-Bit/Nordic/tflite-micro)
+target_sources(app PRIVATE
+    ${TFLM}/signal/micro/kernels/energy.cc
+    ${TFLM}/signal/micro/kernels/fft_auto_scale_common.cc
+    ${TFLM}/signal/micro/kernels/fft_auto_scale_kernel.cc
+    ${TFLM}/signal/micro/kernels/filter_bank.cc
+    ${TFLM}/signal/micro/kernels/filter_bank_log.cc
+    ${TFLM}/signal/micro/kernels/filter_bank_spectral_subtraction.cc
+    ${TFLM}/signal/micro/kernels/filter_bank_square_root.cc
+    ${TFLM}/signal/micro/kernels/filter_bank_square_root_common.cc
+    ${TFLM}/signal/micro/kernels/pcan.cc
+    ${TFLM}/signal/src/energy.cc
+    ${TFLM}/signal/src/fft_auto_scale.cc
+    ${TFLM}/signal/src/filter_bank.cc
+    ${TFLM}/signal/src/filter_bank_log.cc
+    ${TFLM}/signal/src/filter_bank_spectral_subtraction.cc
+    ${TFLM}/signal/src/filter_bank_square_root.cc
+    ${TFLM}/signal/src/log.cc
+    ${TFLM}/signal/src/max_abs.cc
+    ${TFLM}/signal/src/msb_32.cc
+    ${TFLM}/signal/src/msb_64.cc
+    ${TFLM}/signal/src/pcan_argc_fixed.cc
+    ${TFLM}/signal/src/square_root_32.cc
+    ${TFLM}/signal/src/square_root_64.cc)
+
+
+target_sources(app PRIVATE main_thread/detection_on_target_test.cpp
+                            testdata/no_30ms_audio_data.cc
+                            testdata/yes_1000ms_audio_data.cc
+                            models/audio_model/audio_preprocessor_int8_model_data.cpp
+                            models/micro_speech/micro_speech_quantized_model_data.cpp)
 
 
 #### Link ETL library
@@ -31,9 +62,10 @@ add_subdirectory(../../utility/etl ./etl)
 endif()
 target_link_libraries(app PRIVATE etl::etl)
 
-target_compile_options(app PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>)
-
-target_include_directories(app PRIVATE ui_thread/)
+target_include_directories(app PRIVATE  ui_thread/
+                                        models/audio_model/
+                                        models/micro_speech/
+                                        testdata/)
 
 add_custom_target(copy_artifacts ALL
     COMMAND ${CMAKE_COMMAND} -E copy

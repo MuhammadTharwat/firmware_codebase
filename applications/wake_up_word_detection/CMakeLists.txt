@@ -45,8 +45,9 @@ target_sources(app PRIVATE
     ${TFLM}/signal/src/square_root_64.cc)
 
 
-target_sources(app PRIVATE main_thread/detection_on_target_test.cpp
+target_sources(app PRIVATE main_thread/main.cpp
                             testdata/no_30ms_audio_data.cc
+                            testdata/yes_30ms_audio_data.cc
                             testdata/yes_1000ms_audio_data.cc
                             models/audio_model/audio_preprocessor_int8_model_data.cpp
                             models/micro_speech/micro_speech_quantized_model_data.cpp)

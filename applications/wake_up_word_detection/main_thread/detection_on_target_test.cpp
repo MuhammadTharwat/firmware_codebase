@@ -20,7 +20,7 @@ constexpr size_t kArenaSize = 16 * 1024;
 alignas(16) uint8_t g_arena[kArenaSize];
 
 using Features = int8_t[kFeatureCount][kFeatureSize];
-Features g_features;
+
 
 constexpr int kAudioSampleDurationCount =
 	kFeatureDurationMs * kAudioSampleFrequency / 1000;
@@ -232,10 +232,9 @@ static TfLiteStatus GenerateFeatures(const int16_t *audio_data,
 static TfLiteStatus TestAudioSample(const char *label, const int16_t *audio_data,
 									const size_t audio_data_size)
 {
-	TF_LITE_ENSURE_STATUS(
-		GenerateFeatures(audio_data, audio_data_size, &g_features));
-	TF_LITE_ENSURE_STATUS(
-		LoadMicroSpeechModelAndPerformInference(g_features, label));
+	static Features astr_features;
+	TF_LITE_ENSURE_STATUS(GenerateFeatures(audio_data, audio_data_size, &astr_features));
+	TF_LITE_ENSURE_STATUS(LoadMicroSpeechModelAndPerformInference(astr_features, label));
 	return kTfLiteOk;
 }
 

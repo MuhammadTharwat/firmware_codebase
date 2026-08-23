@@ -32,7 +32,7 @@ static const struct adc_dt_spec g_str_adc_channel(ADC_DT_SPEC_STRUCT(ADC_NODE, 0
 
 #define SAMPLE_RATE_HZ 16000U
 #define SAMPLE_INTERVAL_US (1000000U / SAMPLE_RATE_HZ)
-#define SAMPLES_PER_BLOCK 1024U
+#define SAMPLES_PER_BLOCK 2048U
 
 BUILD_ASSERT(SAMPLE_INTERVAL_US > 0, "Sample rate too high to express as an integer interval");
 
@@ -86,16 +86,7 @@ constexpr int kAudioSampleDurationCount =
 constexpr int kAudioSampleStrideCount =
 	kFeatureStrideMs * kAudioSampleFrequency / 1000;
 
-/*
- * A full feature set is kFeatureCount frames of kAudioSampleDurationCount
- * samples advancing kAudioSampleStrideCount at a time -- 15840 samples, far
- * more than one ADC block, and neither length divides SAMPLES_PER_BLOCK. So
- * carry each block's unconsumed tail here to keep frames contiguous, and slide
- * the feature rows instead of restarting at row 0. Worst case held is one
- * frame short of complete plus a whole fresh block.
- */
-static int16_t g_pcm_acc[kAudioSampleDurationCount + SAMPLES_PER_BLOCK];
-static size_t g_pcm_acc_len;
+
 static size_t g_feature_fill;
 
 /* One-off SAADC offset calibration, kept out of the timed sequence. */
@@ -225,7 +216,7 @@ static TfLiteStatus GenerateSingleFeature(const int16_t *audio_data,
 }
 
 static TfLiteStatus LoadMicroSpeechModelAndPerformInference(
-	const Features &features, char const **ppchr_expected_label, float *pflt_score)
+	const Features &features, uint8_t *pu8_index, float *pflt_score)
 {
 	// Map the model into a usable data structure. This doesn't involve any
 	// copying or parsing, it's a very lightweight operation.
@@ -271,8 +262,8 @@ static TfLiteStatus LoadMicroSpeechModelAndPerformInference(
 		return kTfLiteError;
 	}
 
-	float output_scale = output->params.scale;
-	int output_zero_point = output->params.zero_point;
+	float flt_output_scale = output->params.scale;
+	int32_t s32_output_zero_point = output->params.zero_point;
 
 	std::copy_n(&features[0][0], kFeatureElementCount,
 				tflite::GetTensorData<int8_t>(input));
@@ -284,35 +275,43 @@ static TfLiteStatus LoadMicroSpeechModelAndPerformInference(
 	for (int i = 0; i < kCategoryCount; i++)
 	{
 		category_predictions[i] =
-			(tflite::GetTensorData<int8_t>(output)[i] - output_zero_point) *
-			output_scale;
-		// MicroPrintf("  %.4f %s", static_cast<double>(category_predictions[i]),
-		// 			kCategoryLabels[i]);
+			(tflite::GetTensorData<int8_t>(output)[i] - s32_output_zero_point) *
+			flt_output_scale;
 	}
-	int prediction_index =
+	uint8_t u8_predi_index =
 		std::distance(std::begin(category_predictions),
 					  std::max_element(std::begin(category_predictions),
 									   std::end(category_predictions)));
-	*ppchr_expected_label = kCategoryLabels[prediction_index];
-	*pflt_score = category_predictions[prediction_index];
+	*pu8_index = u8_predi_index;
+	*pflt_score = category_predictions[u8_predi_index];
 	return kTfLiteOk;
 }
 
 static TfLiteStatus GenerateFeatures(tflite::MicroInterpreter &ref_feat_interp, const int16_t *audio_data,
 									 const size_t audio_data_size,
-									 Features *features_output)
+									 Features *p_str_features_output)
 {
-	if (audio_data_size > ARRAY_SIZE(g_pcm_acc) - g_pcm_acc_len)
+	/*
+	 * A full feature set is kFeatureCount frames of kAudioSampleDurationCount
+	 * samples advancing kAudioSampleStrideCount at a time -- 15840 samples, far
+	 * more than one ADC block, and neither length divides SAMPLES_PER_BLOCK. So
+	 * carry each block's unconsumed tail here to keep frames contiguous, and slide
+	 * the feature rows instead of restarting at row 0. Worst case held is one
+	 * frame short of complete plus a whole fresh block.
+	 */
+	static int16_t as16_pcm_acc[kAudioSampleDurationCount + SAMPLES_PER_BLOCK];
+	static size_t sz_pcm_acc_len = 0;
+	if (audio_data_size > ARRAY_SIZE(as16_pcm_acc) - sz_pcm_acc_len)
 	{
 		MicroPrintf("PCM accumulator overflow!");
-		g_pcm_acc_len = 0;
+		sz_pcm_acc_len = 0;
 		return kTfLiteError;
 	}
 
-	std::copy_n(audio_data, audio_data_size, &g_pcm_acc[g_pcm_acc_len]);
-	g_pcm_acc_len += audio_data_size;
+	std::copy_n(audio_data, audio_data_size, &as16_pcm_acc[sz_pcm_acc_len]);
+	sz_pcm_acc_len += audio_data_size;
 
-	while (g_pcm_acc_len >= (size_t)kAudioSampleDurationCount)
+	while (sz_pcm_acc_len >= (size_t)kAudioSampleDurationCount)
 	{
 		if (g_feature_fill < kFeatureCount)
 		{
@@ -321,16 +320,16 @@ static TfLiteStatus GenerateFeatures(tflite::MicroInterpreter &ref_feat_interp, 
 		else
 		{
 			/* Window full: drop the oldest row, shift the rest down. */
-			std::copy(&(*features_output)[1][0], &(*features_output)[kFeatureCount][0],
-					  &(*features_output)[0][0]);
+			std::copy(&(*p_str_features_output)[1][0], &(*p_str_features_output)[kFeatureCount][0],
+					  &(*p_str_features_output)[0][0]);
 		}
 
 		TF_LITE_ENSURE_STATUS(
-			GenerateSingleFeature(g_pcm_acc, kAudioSampleDurationCount,
-								  (*features_output)[g_feature_fill - 1], &ref_feat_interp));
+			GenerateSingleFeature(as16_pcm_acc, kAudioSampleDurationCount,
+								  (*p_str_features_output)[g_feature_fill - 1], &ref_feat_interp));
 
-		g_pcm_acc_len -= kAudioSampleStrideCount;
-		std::copy_n(&g_pcm_acc[kAudioSampleStrideCount], g_pcm_acc_len, g_pcm_acc);
+		sz_pcm_acc_len -= kAudioSampleStrideCount;
+		std::copy_n(&as16_pcm_acc[kAudioSampleStrideCount], sz_pcm_acc_len, as16_pcm_acc);
 	}
 
 	return kTfLiteOk;
@@ -353,7 +352,7 @@ extern "C" int main(void)
 		return -1;
 	}
 
-	if (gpio_pin_set_dt(&led, 1) < 0)
+	if (gpio_pin_set_dt(&led, 0) < 0)
 	{
 		return -1;
 	}
@@ -483,45 +482,45 @@ extern "C" int main(void)
 		 * zero-filled window classifies as "no" with 0.94 confidence. */
 		if (g_feature_fill == kFeatureCount)
 		{
-			static char const *pchr_previous_pred = nullptr;
-			char const *pchr_pred = nullptr;
+			static uint8_t u8_prev_index = 0xFF;
+			uint8_t u8_curr_index;
 			const float flt_min_score = 0.8f;
 			float flt_score;
-			if (kTfLiteOk == LoadMicroSpeechModelAndPerformInference(astr_features, &pchr_pred, &flt_score))
+			static uint8_t u8_run_len = 0;
+			const uint8_t u8_detection_cnt = 3;
+
+			if (kTfLiteOk == LoadMicroSpeechModelAndPerformInference(astr_features, &u8_curr_index, &flt_score))
 			{
-				if (nullptr == pchr_previous_pred)
+
+				if (flt_score < flt_min_score)
 				{
-					pchr_previous_pred = pchr_pred;
+					u8_prev_index = 0xFF;
+					u8_run_len = 0;
 				}
-				else if ((std::strcmp(pchr_previous_pred, pchr_pred) != 0) && (flt_score > flt_min_score))
+				else if (u8_curr_index == u8_prev_index)
 				{
-					pchr_previous_pred = pchr_pred;
-					if (std::strcmp("yes", pchr_pred) == 0)
+					u8_run_len++;
+					if (u8_run_len == u8_detection_cnt)
 					{
-						printk("Detected Yes\n");
-						if (gpio_pin_set_dt(&led, 0) < 0)
+						if (std::strcmp("yes", kCategoryLabels[u8_curr_index]) == 0)
 						{
-							return -1;
+							printk("Detected Yes\n");
+							if (gpio_pin_toggle_dt(&led) < 0)
+							{
+								return -1;
+							}
 						}
-					}
-					else if (std::strcmp("no", pchr_pred) == 0)
-					{
-						printk("Detected no\n");
-						if (gpio_pin_set_dt(&led, 1) < 0)
+						else
 						{
-							return -1;
+							/*Do nothing*/
 						}
-					}
-					else
-					{
-						/*Do nothing*/
 					}
 				}
 				else
 				{
-					/*Do nothing*/
+					u8_prev_index = u8_curr_index;
+					u8_run_len = 1;
 				}
-
 			}
 			else
 			{

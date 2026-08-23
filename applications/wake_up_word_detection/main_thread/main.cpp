@@ -18,6 +18,8 @@
 
 #include <arm_math.h>
 
+#define LED_NODE DT_NODELABEL(led_a)
+
 #define ADC_NODE DT_NODELABEL(adc)
 #define ADC_CH0_NODE DT_CHILD(ADC_NODE, channel_0)
 
@@ -28,11 +30,6 @@
  */
 static const struct adc_dt_spec g_str_adc_channel(ADC_DT_SPEC_STRUCT(ADC_NODE, 0)); /* AIN1 / P0.03 */
 
-/*
- * Sampling rate.
- * Note the integer division: 16000 Hz wants 62.5 us, which is not expressible,
- * so 62 us gives an actual rate of ~16129 Hz (+0.8%).
- */
 #define SAMPLE_RATE_HZ 16000U
 #define SAMPLE_INTERVAL_US (1000000U / SAMPLE_RATE_HZ)
 #define SAMPLES_PER_BLOCK 1024U
@@ -62,16 +59,8 @@ static struct k_poll_event g_adc_event;
 #define PCM_SHIFT (16 - ADC_RESOLUTION_BITS)
 
 BUILD_ASSERT(ADC_RESOLUTION_BITS > 0 && ADC_RESOLUTION_BITS <= 16,
-	     "PCM_SHIFT assumes a resolution that fits in an int16_t sample");
+			 "PCM_SHIFT assumes a resolution that fits in an int16_t sample");
 
-/*
- * The bias point is set by the microphone's circuit rather than by mid-scale,
- * and it drifts with supply and temperature, so track it instead of
- * subtracting a constant 2048. Q16.16 exponential average; the shift places
- * the resulting high-pass corner at SAMPLE_RATE_HZ / (2 * pi * 2^DC_SHIFT),
- * about 2.5 Hz at 16 kHz -- below the audio band, above any bias drift.
- */
-#define DC_SHIFT 10
 static const struct adc_sequence_options g_str_adc_opts = {
 	.interval_us = SAMPLE_INTERVAL_US,
 	/* Must stay null: a non-null callback forces the driver off the
@@ -84,23 +73,11 @@ static const struct adc_sequence_options g_str_adc_opts = {
 using MicroSpeechOpResolver = tflite::MicroMutableOpResolver<4>;
 using AudioPreprocessorOpResolver = tflite::MicroMutableOpResolver<18>;
 
-constexpr size_t kArenaSize = 12 * 1024;
-alignas(16) uint8_t g_arena[kArenaSize];
+static constexpr size_t gsz_audio_preproc_arena = 12 * 1024;
+static uint8_t gau8_audio_preproc_arena[gsz_audio_preproc_arena] alignas(16);
 
-/*
- * The audio preprocessor is stateful: FilterBankSpectralSubtraction and PCAN
- * keep a running noise estimate in a persistent buffer that carries across
- * Invoke() calls. One interpreter therefore has to span the whole rolling
- * window -- recreating it per block resets the estimate every few frames and
- * the features stop being comparable. It holds g_arena for the run, so
- * micro_speech gets an arena of its own.
- */
-constexpr size_t kSpeechArenaSize = 10 * 1024;
-alignas(16) uint8_t g_speech_arena[kSpeechArenaSize];
-
-static AudioPreprocessorOpResolver g_feature_resolver;
-alignas(tflite::MicroInterpreter) static uint8_t g_feature_interp_mem[sizeof(tflite::MicroInterpreter)];
-static tflite::MicroInterpreter *g_feature_interp;
+static constexpr size_t gsz_speech_arena = 10 * 1024;
+static uint8_t gau8_speech_arena[gsz_speech_arena] alignas(16);
 
 using Features = int8_t[kFeatureCount][kFeatureSize];
 
@@ -108,7 +85,6 @@ constexpr int kAudioSampleDurationCount =
 	kFeatureDurationMs * kAudioSampleFrequency / 1000;
 constexpr int kAudioSampleStrideCount =
 	kFeatureStrideMs * kAudioSampleFrequency / 1000;
-
 
 /*
  * A full feature set is kFeatureCount frames of kAudioSampleDurationCount
@@ -249,7 +225,7 @@ static TfLiteStatus GenerateSingleFeature(const int16_t *audio_data,
 }
 
 static TfLiteStatus LoadMicroSpeechModelAndPerformInference(
-	const Features &features, const char *expected_label)
+	const Features &features, char const **ppchr_expected_label, float *pflt_score)
 {
 	// Map the model into a usable data structure. This doesn't involve any
 	// copying or parsing, it's a very lightweight operation.
@@ -264,7 +240,7 @@ static TfLiteStatus LoadMicroSpeechModelAndPerformInference(
 	MicroSpeechOpResolver op_resolver;
 	TF_LITE_ENSURE_STATUS(RegisterOps(op_resolver));
 
-	tflite::MicroInterpreter interpreter(model, op_resolver, g_speech_arena, kSpeechArenaSize);
+	tflite::MicroInterpreter interpreter(model, op_resolver, gau8_speech_arena, gsz_speech_arena);
 
 	TF_LITE_ENSURE_STATUS(interpreter.AllocateTensors());
 
@@ -317,39 +293,15 @@ static TfLiteStatus LoadMicroSpeechModelAndPerformInference(
 		std::distance(std::begin(category_predictions),
 					  std::max_element(std::begin(category_predictions),
 									   std::end(category_predictions)));
-	if (strcmp(expected_label, kCategoryLabels[prediction_index]) != 0)
-	{
-		// MicroPrintf("Expected label mismatch!");
-		return kTfLiteError;
-	}
-
+	*ppchr_expected_label = kCategoryLabels[prediction_index];
+	*pflt_score = category_predictions[prediction_index];
 	return kTfLiteOk;
 }
 
-static TfLiteStatus GenerateFeatures(const int16_t *audio_data,
+static TfLiteStatus GenerateFeatures(tflite::MicroInterpreter &ref_feat_interp, const int16_t *audio_data,
 									 const size_t audio_data_size,
 									 Features *features_output)
 {
-	// Map the model into a usable data structure. This doesn't involve any
-	// copying or parsing, it's a very lightweight operation.
-	const tflite::Model *model =
-		tflite::GetModel(g_audio_preprocessor_int8_model_data);
-	if (model->version() != TFLITE_SCHEMA_VERSION)
-	{
-		MicroPrintf("Model version mismatch in GenerateFeatures!");
-		return kTfLiteError;
-	}
-
-	if (g_feature_interp == nullptr)
-	{
-		TF_LITE_ENSURE_STATUS(RegisterOps(g_feature_resolver));
-		g_feature_interp = new (g_feature_interp_mem) tflite::MicroInterpreter(
-			model, g_feature_resolver, g_arena, kArenaSize);
-		TF_LITE_ENSURE_STATUS(g_feature_interp->AllocateTensors());
-		MicroPrintf("preprocessor arena %u/%u bytes",
-					g_feature_interp->arena_used_bytes(), kArenaSize);
-	}
-
 	if (audio_data_size > ARRAY_SIZE(g_pcm_acc) - g_pcm_acc_len)
 	{
 		MicroPrintf("PCM accumulator overflow!");
@@ -375,7 +327,7 @@ static TfLiteStatus GenerateFeatures(const int16_t *audio_data,
 
 		TF_LITE_ENSURE_STATUS(
 			GenerateSingleFeature(g_pcm_acc, kAudioSampleDurationCount,
-								  (*features_output)[g_feature_fill - 1], g_feature_interp));
+								  (*features_output)[g_feature_fill - 1], &ref_feat_interp));
 
 		g_pcm_acc_len -= kAudioSampleStrideCount;
 		std::copy_n(&g_pcm_acc[kAudioSampleStrideCount], g_pcm_acc_len, g_pcm_acc);
@@ -388,6 +340,42 @@ extern "C" int main(void)
 {
 	int err;
 	struct adc_sequence sequence;
+
+	static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NODE, gpios);
+
+	if (!gpio_is_ready_dt(&led))
+	{
+		return -1;
+	}
+
+	if (gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE) < 0)
+	{
+		return -1;
+	}
+
+	if (gpio_pin_set_dt(&led, 1) < 0)
+	{
+		return -1;
+	}
+
+	static AudioPreprocessorOpResolver str_feature_resolver;
+	// Map the model into a usable data structure. This doesn't involve any
+	// copying or parsing, it's a very lightweight operation.
+	static const tflite::Model *model =
+		tflite::GetModel(g_audio_preprocessor_int8_model_data);
+	if (model->version() != TFLITE_SCHEMA_VERSION)
+	{
+		MicroPrintf("Model version mismatch in GenerateFeatures!");
+		return -1;
+	}
+
+	TF_LITE_ENSURE_STATUS(RegisterOps(str_feature_resolver));
+
+	static tflite::MicroInterpreter str_feature_interp(model, str_feature_resolver, gau8_audio_preproc_arena, gsz_audio_preproc_arena);
+
+	TF_LITE_ENSURE_STATUS(str_feature_interp.AllocateTensors());
+	MicroPrintf("preprocessor arena %u/%u bytes",
+				str_feature_interp.arena_used_bytes(), gsz_audio_preproc_arena);
 
 	if (!adc_is_ready_dt(&g_str_adc_channel))
 	{
@@ -490,23 +478,53 @@ extern "C" int main(void)
 
 		adc_block_to_pcm(g_sample_buf[ready], SAMPLES_PER_BLOCK);
 
-		(void)(GenerateFeatures(g_sample_buf[ready], SAMPLES_PER_BLOCK, &astr_features));
+		(void)(GenerateFeatures(str_feature_interp, g_sample_buf[ready], SAMPLES_PER_BLOCK, &astr_features));
 		/* Rows 2..48 are still zero until ~1 s of audio has been seen, and a
 		 * zero-filled window classifies as "no" with 0.94 confidence. */
 		if (g_feature_fill == kFeatureCount)
 		{
-			volatile static bool b_detected = false;
-			if (kTfLiteOk == LoadMicroSpeechModelAndPerformInference(astr_features, "yes"))
+			static char const *pchr_previous_pred = nullptr;
+			char const *pchr_pred = nullptr;
+			const float flt_min_score = 0.8f;
+			float flt_score;
+			if (kTfLiteOk == LoadMicroSpeechModelAndPerformInference(astr_features, &pchr_pred, &flt_score))
 			{
-				if(b_detected == false)
+				if (nullptr == pchr_previous_pred)
 				{
-					b_detected = true;
-					printk("Detected\n");
+					pchr_previous_pred = pchr_pred;
 				}
+				else if ((std::strcmp(pchr_previous_pred, pchr_pred) != 0) && (flt_score > flt_min_score))
+				{
+					pchr_previous_pred = pchr_pred;
+					if (std::strcmp("yes", pchr_pred) == 0)
+					{
+						printk("Detected Yes\n");
+						if (gpio_pin_set_dt(&led, 0) < 0)
+						{
+							return -1;
+						}
+					}
+					else if (std::strcmp("no", pchr_pred) == 0)
+					{
+						printk("Detected no\n");
+						if (gpio_pin_set_dt(&led, 1) < 0)
+						{
+							return -1;
+						}
+					}
+					else
+					{
+						/*Do nothing*/
+					}
+				}
+				else
+				{
+					/*Do nothing*/
+				}
+
 			}
-			else 
+			else
 			{
-				b_detected = false;
 			}
 		}
 	}

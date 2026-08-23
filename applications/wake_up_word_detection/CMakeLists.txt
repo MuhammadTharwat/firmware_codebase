@@ -46,9 +46,6 @@ target_sources(app PRIVATE
 
 
 target_sources(app PRIVATE main_thread/main.cpp
-                            testdata/no_30ms_audio_data.cc
-                            testdata/yes_30ms_audio_data.cc
-                            testdata/yes_1000ms_audio_data.cc
                             models/audio_model/audio_preprocessor_int8_model_data.cpp
                             models/micro_speech/micro_speech_quantized_model_data.cpp)
 
@@ -66,7 +63,7 @@ target_link_libraries(app PRIVATE etl::etl)
 target_include_directories(app PRIVATE  ui_thread/
                                         models/audio_model/
                                         models/micro_speech/
-                                        testdata/)
+                                        )
 
 add_custom_target(copy_artifacts ALL
     COMMAND ${CMAKE_COMMAND} -E copy
